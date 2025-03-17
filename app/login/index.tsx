@@ -16,12 +16,8 @@ import { LoginFormData } from '../../types/authTypes';
 import { loginApi } from '../../api/authApi';
 import { Link } from 'expo-router';
 import { useLinkTo } from '@react-navigation/native';
-
-interface LoginScreenProps {
-  navigation: any;
-}
-
-const LoginScreen: React.FC<LoginScreenProps> = () => {
+ 
+const LoginScreen: React.FC = () => {
   const {
     control,
     handleSubmit,

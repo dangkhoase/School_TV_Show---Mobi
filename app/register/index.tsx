@@ -15,11 +15,7 @@ import { registerApi, RegisterFormData } from '@/api/authApi';
 import { Link } from 'expo-router';
 import { useLinkTo } from '@react-navigation/native';
 
-interface RegisterScreenProps {
-  navigation: any;
-}
-
-const RegisterScreen: React.FC<RegisterScreenProps> = ({}) => {
+const RegisterScreen: React.FC = () => {
   const linkTo = useLinkTo();
 
   const {

@@ -1,5 +1,5 @@
 'use dom';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Header from '../../components/Header';
 import TopPlacesCarousel from '../../components/ComImg/TopPlacesCarousel';
@@ -11,7 +11,9 @@ export default function HomeScreen() {
       <Header />
       <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
         <TopPlacesCarousel list={TOP_PLACES} />
-        <View style={{ height: 120 }}>ssss</View>
+        <View style={{ height: 120 }}>
+          <Text>ssss</Text>
+        </View>
       </ScrollView>
     </View>
   );
@@ -22,5 +24,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 40,
-  }, 
+  },
 });
