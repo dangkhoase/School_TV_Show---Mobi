@@ -14,16 +14,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useForm, Controller } from 'react-hook-form';
 import { LoginFormData } from '../../types/authTypes';
 import { loginApi } from '../../api/authApi';
-import { Link } from 'expo-router';
-import { useLinkTo } from '@react-navigation/native';
- 
+import { Link, router } from 'expo-router';
+import { useSession } from '@/auth/ctx';
 const LoginScreen: React.FC = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>();
-  const linkTo = useLinkTo();
+  const { signIn } = useSession();
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -32,12 +31,13 @@ const LoginScreen: React.FC = () => {
 
       if (result) {
         // Lưu token
-
-        if (result.data && result.data.token) {
+        if (result && result.token) {
+          signIn();
           await AsyncStorage.setItem('token', result.token);
         }
-        Alert.alert('Thành công', result.message);
-        linkTo('/'); // Hoặc màn hình chính bạn muốn
+        setTimeout(() => {
+          router.replace('/');
+        }, 500);
       } else {
         Alert.alert('Sai thông tin', 'Tài khoản hoặc mật khẩu không chính xác!');
       }

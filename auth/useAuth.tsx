@@ -35,13 +35,15 @@ async function registerForPushNotificationsAsync() {
       const pushTokenData = await Notifications.getExpoPushTokenAsync({ projectId });
       return pushTokenData.data;
     } catch (error) {
-      Alert.alert('Failed to get push token', error.message);
+      Alert.alert('Failed to get push token', (error as Error).message);
     }
   } else {
     Alert.alert('Physical device required', 'Must use physical device for push notifications.');
   }
 }
-export const AuthProvider = ({ children }) => {
+import { ReactNode } from 'react';
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser, removeUser] = useStorage('user', null);
   const [role, setRole, removeRole] = useStorage('role', null);
   const [elders, setElders, removeElders] = useStorage('elders', []);
@@ -49,13 +51,18 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, , removeAccessToken] = useStorage('token', null);
   const [expoPushToken, setExpoPushToken, removeExpoPushToken] = useStorage('expoPushToken', '');
 
-  const login = (userData, expoPushToken) => {
+  interface UserData {
+    elders: any[];
+    contracts: any[];
+    roles: string[];
+    [key: string]: any;
+  }
+
+  const login = (userData: UserData, expoPushToken: string) => {
     setUser({ ...userData });
-    setElders(userData?.elders);
-    setContracts(userData?.contracts);
-    setRole(userData?.roles[0]);
     setExpoPushToken(expoPushToken);
   };
+
   const handExpoPushToken = useCallback(() => {
     const fetchPushToken = async () => {
       try {

@@ -6,7 +6,7 @@ export default function Layout() {
       screenOptions={{
         headerStyle: { backgroundColor: '#ffcc00' },
         headerTintColor: '#333',
-        headerTitle: 'Khu vực cá nhân',
+        headerTitle: 'Login',
         headerShown: false,
       }}
     />
