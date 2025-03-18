@@ -33,7 +33,7 @@ export const loginApi = async (data: LoginFormData) => {
     const response = await axiosInstance.post('/api/Account/login', data);
     return response.data;
   } catch (error) {
-    console.error('loginApi error:', error);
+    // console.error('loginApi error:', error);
     throw error;
   }
 };

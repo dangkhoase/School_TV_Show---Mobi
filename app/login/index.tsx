@@ -1,188 +1,243 @@
 // src/screens/LoginScreen.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ScrollView,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useForm, Controller } from 'react-hook-form';
 import { LoginFormData } from '../../types/authTypes';
 import { loginApi } from '../../api/authApi';
 import { Link, router } from 'expo-router';
 import { useSession } from '@/auth/ctx';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Lock, Mail } from 'lucide-react-native';
+import { FormTextInput } from '@/components/from-inputs';
+import { Button } from '@rneui/themed';
+import { Formlogin, loginSchema } from '@/schemaForm/login';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useStorageState } from '@/auth/useStorageState';
+
 const LoginScreen: React.FC = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>();
+  } = useForm<Formlogin>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
   const { signIn } = useSession();
+  const [[isLoading, token], setSession] = useStorageState('token');
+
+  console.log('isLoading 123', isLoading);
+  console.log('token 123 login', token);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: LoginFormData) => {
+    setLoading(true);
     try {
       const result = await loginApi(data);
-      console.log(result);
+      console.log(result.token);
 
       if (result) {
         // Lưu token
         if (result && result.token) {
+          await setSession(result.token);
           signIn();
-          await AsyncStorage.setItem('token', result.token);
         }
         setTimeout(() => {
           router.replace('/');
         }, 500);
       } else {
+        setLoading(false);
         Alert.alert('Sai thông tin', 'Tài khoản hoặc mật khẩu không chính xác!');
       }
     } catch (error) {
+      setLoading(false);
+
       Alert.alert('Sai thông tin', 'Tài khoản hoặc mật khẩu không chính xác!');
       // console.error('onSubmit error:', error);
     }
   };
 
   return (
-    <ScrollView style={styles.scrollContainer} contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={styles.container}>
-        <Text style={styles.headerTitle}>Đăng Nhập</Text>
+    <ImageBackground
+      source={{ uri: 'https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=1000' }}
+      style={styles.backgroundImage}
+    >
+      <LinearGradient colors={['rgba(0,0,0,0.4)', 'rgba(0,0,0,0.8)']} style={styles.gradient}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.container}
+        >
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>Chào mừng đến với schooltvshow</Text>
+            <Text style={styles.subHeaderText}>Đăng nhập để tiếp tục</Text>
+          </View>
+          <View style={styles.formContainer}>
+            <FormTextInput
+              name="email"
+              control={control}
+              label="Email"
+              stylelabel={{ color: '#fff' }}
+              placeholder="Enter your Email"
+              error={errors.email}
+              leftIcon={<Mail size={20} color="#6B7280" />}
+              autoCapitalize="words"
+            />
 
-        <View style={styles.card}>
-          {/* EMAIL */}
-          <Text style={styles.label}>Email</Text>
-          <Controller
-            control={control}
-            name="email"
-            rules={{
-              required: 'Bạn chưa nhập email',
-              pattern: { value: /^\S+@\S+$/i, message: 'Email không hợp lệ' },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={[styles.input, errors.email && styles.inputError]}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="Nhập email"
-                keyboardType="email-address"
-              />
-            )}
-          />
-          {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
-
-          {/* PASSWORD */}
-          <Text style={styles.label}>Mật khẩu</Text>
-          <Controller
-            control={control}
-            name="password"
-            rules={{
-              required: 'Bạn chưa nhập mật khẩu',
-              minLength: { value: 6, message: 'Mật khẩu phải ít nhất 6 ký tự' },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={[styles.input, errors.password && styles.inputError]}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="Nhập mật khẩu"
-                secureTextEntry
-              />
-            )}
-          />
-          {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
-
-          {/* Button Đăng Nhập */}
-          <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.buttonText}>Đăng Nhập</Text>
-          </TouchableOpacity>
-
-          {/* Link chuyển qua màn hình Đăng ký */}
-          <Text style={styles.switchText}>
-            Chưa có tài khoản?
-            <Link href={'/register'} style={styles.switchTextHighlight}>
-              Đăng Ký
-            </Link>
-          </Text>
+            <FormTextInput
+              name="password"
+              control={control}
+              stylelabel={{ color: '#fff' }}
+              label="Mật khẩu"
+              placeholder="Vui lòng nhập mật khẩu"
+              error={errors.password}
+              leftIcon={<Lock size={20} color="#6B7280" />}
+              autoCapitalize="words"
+            />
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+            <Button
+              title="Sign In"
+              onPress={handleSubmit(onSubmit)}
+              disabled={loading}
+              buttonStyle={styles.signInButton}
+              titleStyle={styles.buttonTitle}
+              disabledStyle={styles.disabledButton}
+              icon={
+                loading ? (
+                  <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
+                ) : undefined
+              }
+            />
+          </View>
+        </KeyboardAvoidingView>
+        <View style={styles.footerContainer}>
+          <Text style={styles.footerText}> Chưa có tài khoản?</Text>
+          <Link href={'/register'}>
+            <Text style={styles.signUpText}>Sign Up</Text>
+          </Link>
         </View>
-      </View>
-    </ScrollView>
+      </LinearGradient>
+    </ImageBackground>
   );
 };
 
 export default LoginScreen;
-
 const styles = StyleSheet.create({
-  scrollContainer: {
+  backgroundImage: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    width: '100%',
+    height: '100%',
   },
-  container: {
-    flexGrow: 1,
-    padding: 20,
+  gradient: {
+    flex: 1,
     justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-    alignSelf: 'center',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 16,
-    elevation: 3, // Android
-    shadowColor: '#000', // iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  label: {
-    marginTop: 8,
-    fontWeight: '600',
-    color: '#444',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginTop: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 4,
-  },
-  inputError: {
-    borderColor: 'red',
-  },
-  errorText: {
-    marginTop: 2,
-    color: 'red',
-    fontSize: 12,
-  },
-  button: {
-    marginTop: 16,
-    backgroundColor: '#0066cc',
-    paddingVertical: 12,
-    borderRadius: 4,
     alignItems: 'center',
   },
-  buttonText: {
-    color: '#fff',
+  container: {
+    width: '90%',
+    maxWidth: 400,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  headerText: {
+    fontSize: 34,
     fontWeight: 'bold',
-  },
-  switchText: {
+    color: 'white',
+    marginBottom: 10,
     textAlign: 'center',
-    marginTop: 12,
-    color: '#777',
   },
-  switchTextHighlight: {
-    color: '#0066cc',
-    fontWeight: '600',
+  subHeaderText: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.8)',
+  },
+  formContainer: {
+    width: '100%',
+    marginBottom: 30,
+  },
+  inputContainer: {
+    marginBottom: 10,
+    borderBottomColor: 'rgba(255,255,255,0.2)',
+  },
+  inputText: {
+    color: 'white',
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+  },
+  forgotPasswordText: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 14,
+  },
+  signInButton: {
+    backgroundColor: '#6C63FF',
+    borderRadius: 25,
+    height: 50,
+    marginBottom: 20,
+  },
+  buttonTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  disabledButton: {
+    backgroundColor: 'rgba(108, 99, 255, 0.5)',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+  },
+  dividerText: {
+    color: 'white',
+    paddingHorizontal: 10,
+    fontSize: 14,
+  },
+  socialContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  socialButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerText: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 14,
+  },
+  signUpText: {
+    color: '#6C63FF',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });

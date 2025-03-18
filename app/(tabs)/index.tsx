@@ -1,14 +1,17 @@
 'use dom';
-import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Button, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import Header from '../../components/Header';
 import TopPlacesCarousel from '../../components/ComImg/TopPlacesCarousel';
-import { TOP_PLACES } from '@/data';
+import { communityPosts, featuredVideos, liveEvents, TOP_PLACES, upcomingEvents } from '@/data';
 import { useEffect } from 'react';
-import { router } from 'expo-router';
 import { useSession } from '@/auth/ctx';
+import CommunityPostsSection from '@/components/CommunityPostsSection';
+import LiveEventsSection from '@/components/LiveEventsSection';
+import UpcomingEventsSection from '@/components/UpcomingEventsSection';
+import FeaturedVideosSection from '@/components/FeaturedVideosSection';
 export default function HomeScreen() {
-  const { session, isLoading, signIn, signOut } = useSession();
+  const { signIn, signOut } = useSession();
 
   useEffect(() => {
     setTimeout(() => {}, 10000);
@@ -21,23 +24,40 @@ export default function HomeScreen() {
     signOut();
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header />
-      <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         <TopPlacesCarousel list={TOP_PLACES} />
-        <View style={{ height: 120 }}>
-          <Button onPress={() => hand()} title="signIn" />
-        </View>
-        <Button onPress={() => logout()} title="signOut" />
+        <LiveEventsSection events={liveEvents} />
+
+        {/* Upcoming Events Section */}
+        <UpcomingEventsSection events={upcomingEvents} />
+
+        {/* Featured Videos Section */}
+        <FeaturedVideosSection videos={featuredVideos} />
+
+        {/* Community Posts Section */}
+        <CommunityPostsSection posts={communityPosts} />
+
+        <View style={styles.footer} />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 40,
+    backgroundColor: '#f5f5f5',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  footer: {
+    height: 20,
   },
 });

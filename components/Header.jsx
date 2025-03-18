@@ -1,7 +1,33 @@
-import React from 'react'; 
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'; 
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import ComAvatar from './ComAvatar';
-export default function Header() { 
+import { useCallback, useEffect, useState } from 'react';
+import { AccountInfo } from '@/api/useApi';
+import { useSession } from '@/auth/ctx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useStorageState } from '@/auth/useStorageState';
+export default function Header() {
+  const [userName, setUserName] = useState('');
+  const { session } = useSession();
+  const [[isLoading, token], setSession] = useStorageState('token');
+
+  console.log('isLoading 123', isLoading);
+  console.log('token 123', token);
+  console.log('AsyncStorage 123', AsyncStorage.getItem("token"));
+
+  const fetchData = useCallback(async () => {
+    if (session) {
+      try {
+        const response = await AccountInfo();
+        setUserName(response?.fullname);
+      } catch (error) {
+        console.error('Error fetching account info:', error);
+      }
+    }
+  }, [session]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   return (
     <View
       style={{
@@ -11,14 +37,11 @@ export default function Header() {
         alignItems: 'center',
       }}
     >
-      <TouchableOpacity
-      
-        style={styles.header}
-      >
+      <TouchableOpacity style={styles.header}>
         <ComAvatar link={null} />
         <View style={styles.text}>
           <Text>Xin chào!</Text>
-          <Text style={styles.textName}>{}</Text>
+          <Text style={styles.textName}>{userName}</Text>
         </View>
       </TouchableOpacity>
     </View>

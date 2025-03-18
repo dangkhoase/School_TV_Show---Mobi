@@ -1,66 +1,177 @@
-import { Redirect, router, Tabs } from 'expo-router';
-import React from 'react';
-import { Platform, Text } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Redirect, Tabs } from 'expo-router';
+import { Text, View, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSession } from '@/auth/ctx';
+import { Home, Compass, User, Bell } from 'lucide-react-native';
+
+interface TabButtonProps {
+  isFocused: boolean;
+  onPress: (event: GestureResponderEvent) => void;
+  icon: React.ReactNode;
+  label: string;
+}
+
+const TabButton = ({ isFocused, onPress, icon, label }: TabButtonProps) => { 
+  // Thêm kiểm tra để đảm bảo `onPress` không bị gọi liên tục
+  const handlePress = (event: GestureResponderEvent) => {
+    if (onPress) {
+      onPress(event); // Gọi onPress nếu có
+    }
+  };
+
+  return (
+    <TouchableOpacity
+      style={[styles.tabButtonContainer, { paddingBottom: 5 }]}
+      onPress={handlePress}
+      activeOpacity={0.7}
+    >
+      <View style={styles.tabButton}>{icon}</View>
+      {isFocused && <Text style={styles.tabLabel}>{label}</Text>}
+    </TouchableOpacity>
+  );
+};
+
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
   const { session, isLoading } = useSession();
+  const insets = useSafeAreaInsets();
+
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
   }
 
-  // Only require authentication within the (app) group's layout as users
-  // need to be able to access the (auth) group and sign in again.
   if (!session) {
-    // On web, static rendering will stop here as the user is not authenticated
-    // in the headless Node process that the pages are rendered in.
-    return <Redirect href="/login"  />;
-    // return router.replace('/login');
+    return <Redirect href="/login" />;
   }
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
+        tabBarStyle: {
+          position: 'absolute',
+          height: 60 + (insets.bottom || 20),
+          backgroundColor: 'white',
+          borderTopWidth: 1,
+          borderTopColor: '#EEEEEE',
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+        },
+        tabBarShowLabel: false,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarButton: (props) => (
+            <TabButton
+              isFocused={props.accessibilityState?.selected ?? false}
+              onPress={props.onPress || (() => {})} // Tránh trường hợp undefined
+              label="Home"
+              icon={
+                <Home
+                  size={24}
+                  color={props.accessibilityState?.selected ? '#6C63FF' : '#888888'}
+                />
+              }
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explores123',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="1.circle" color={color} />,
+          title: 'Explore',
+          tabBarButton: (props) => (
+            <TabButton
+              isFocused={props.accessibilityState?.selected ?? false}
+              onPress={props.onPress || (() => {})} // Tránh trường hợp undefined
+              label="Explore"
+              icon={
+                <Compass
+                  size={24}
+                  color={props?.accessibilityState?.selected ? '#6C63FF' : '#888888'}
+                />
+              }
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: 'Notifications',
+          tabBarButton: (props) => (
+            <TabButton
+              isFocused={props.accessibilityState?.selected ?? false}
+              onPress={props.onPress || (() => {})} // Tránh trường hợp undefined
+              label="Activity"
+              icon={
+                <Bell
+                  size={24}
+                  color={props.accessibilityState?.selected ? '#6C63FF' : '#888888'}
+                />
+              }
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Explores123',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="person.fill" color={color} />,
+          title: 'Profile',
+          tabBarButton: (props) => (
+            <TabButton
+              isFocused={props.accessibilityState?.selected ?? false}
+              onPress={props.onPress || (() => {})} // Tránh trường hợp undefined
+              label="Profile"
+              icon={
+                <User
+                  size={24}
+                  color={props.accessibilityState?.selected ? '#6C63FF' : '#888888'}
+                />
+              }
+            />
+          ),
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#333',
+  },
+  tabButtonContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 50,
+    height: 60,
+  },
+  tabLabel: {
+    fontSize: 12,
+    color: '#6C63FF',
+    fontWeight: '600',
+    marginTop: -5,
+  },
+});

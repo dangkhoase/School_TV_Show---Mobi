@@ -94,11 +94,7 @@ const RegisterScreen: React.FC = () => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.container}
         >
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContainer}
-          >
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.headerContainer}>
               <Text style={styles.headerText}>Đăng Ký Tài Khoản</Text>
               <Text style={styles.subHeaderText}>Tạo tài khoản mới để tiếp tục</Text>
