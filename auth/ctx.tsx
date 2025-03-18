@@ -33,7 +33,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       value={{
         signIn: () => {
           // Perform sign-in logic here
-          setSession('xxx');
+          setSession('"xxx"');
         },
         signOut: () => {
           setSession(null);

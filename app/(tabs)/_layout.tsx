@@ -11,7 +11,7 @@ interface TabButtonProps {
   label: string;
 }
 
-const TabButton = ({ isFocused, onPress, icon, label }: TabButtonProps) => { 
+const TabButton = ({ isFocused, onPress, icon, label }: TabButtonProps) => {
   // Thêm kiểm tra để đảm bảo `onPress` không bị gọi liên tục
   const handlePress = (event: GestureResponderEvent) => {
     if (onPress) {

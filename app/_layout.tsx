@@ -4,10 +4,11 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
-import { AuthProvider } from '../auth/useAuth';
 import { SessionProvider } from '@/auth/ctx';
+import { StorageProvider } from '@/Context/StorageContext';
+import * as SecureStore from 'expo-secure-store';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -27,9 +28,9 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={DefaultTheme}>
+    <StorageProvider>
       <SessionProvider>
-        <AuthProvider>
+        <ThemeProvider value={DefaultTheme}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="login" options={{ headerShown: false }} />
@@ -37,8 +38,8 @@ export default function RootLayout() {
             <Stack.Screen name="+not-found" />
           </Stack>
           <StatusBar style="auto" />
-        </AuthProvider>
+        </ThemeProvider>
       </SessionProvider>
-    </ThemeProvider>
+    </StorageProvider>
   );
 }

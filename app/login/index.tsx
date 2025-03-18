@@ -1,5 +1,4 @@
 // src/screens/LoginScreen.tsx
-
 import React, { useState } from 'react';
 import {
   View,
@@ -12,7 +11,6 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginFormData } from '../../types/authTypes';
 import { loginApi } from '../../api/authApi';
 import { Link, router } from 'expo-router';
@@ -24,8 +22,9 @@ import { Button } from '@rneui/themed';
 import { Formlogin, loginSchema } from '@/schemaForm/login';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useStorage } from '@/Context/StorageContext';
 import { useStorageState } from '@/auth/useStorageState';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen: React.FC = () => {
   const {
     control,
@@ -34,17 +33,14 @@ const LoginScreen: React.FC = () => {
   } = useForm<Formlogin>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'khoa1243@e.com',
+      password: 'Khoa1234.',
     },
   });
   const { signIn } = useSession();
-  const [[isLoading, token], setSession] = useStorageState('token');
 
-  console.log('isLoading 123', isLoading);
-  console.log('token 123 login', token);
   const [loading, setLoading] = useState(false);
-
+  const [[,], setToken] = useStorageState('userToken');
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
@@ -53,10 +49,9 @@ const LoginScreen: React.FC = () => {
 
       if (result) {
         // Lưu token
-        if (result && result.token) {
-          await setSession(result.token);
-          signIn();
-        }
+        const jsonValue = JSON.stringify(result.token);
+        await AsyncStorage.setItem('userToken', jsonValue);
+        signIn();
         setTimeout(() => {
           router.replace('/');
         }, 500);
@@ -66,6 +61,7 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error) {
       setLoading(false);
+      console.log(12312312, error);
 
       Alert.alert('Sai thông tin', 'Tài khoản hoặc mật khẩu không chính xác!');
       // console.error('onSubmit error:', error);
@@ -106,7 +102,7 @@ const LoginScreen: React.FC = () => {
               placeholder="Vui lòng nhập mật khẩu"
               error={errors.password}
               leftIcon={<Lock size={20} color="#6B7280" />}
-              autoCapitalize="words"
+              secureTextEntry
             />
             <TouchableOpacity style={styles.forgotPassword}>
               <Text style={styles.forgotPasswordText}>Forgot Password?</Text>

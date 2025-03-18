@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -30,14 +30,14 @@ import {
   User,
   Lock,
 } from 'lucide-react-native';
-import { useSession } from '@/auth/ctx';
+import { useSession } from '@/auth/ctx';  
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { signOut } = useSession();
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [animation] = useState(new Animated.Value(0));
-
+ 
   // Mock user data
   const user = {
     name: 'Nguyễn Văn A',
@@ -51,7 +51,7 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     try {
-      // await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('userToken');
       signOut();
       router.replace('/login');
     } catch (error) {
@@ -138,7 +138,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Hoạt động gần đây</Text>
           <View style={styles.activityContainer}>
-            <TouchableOpacity style={styles.activityItem}>
+            <TouchableOpacity onPress={()=>router.replace('/test/2')} style={styles.activityItem}>
               <View style={[styles.activityIcon, { backgroundColor: '#FFE8EC' }]}>
                 <Heart size={20} color="#FF4D67" />
               </View>

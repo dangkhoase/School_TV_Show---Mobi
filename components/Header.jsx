@@ -2,28 +2,20 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import ComAvatar from './ComAvatar';
 import { useCallback, useEffect, useState } from 'react';
 import { AccountInfo } from '@/api/useApi';
-import { useSession } from '@/auth/ctx';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useStorageState } from '@/auth/useStorageState';
+import { useFocusEffect } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 export default function Header() {
   const [userName, setUserName] = useState('');
-  const { session } = useSession();
-  const [[isLoading, token], setSession] = useStorageState('token');
-
-  console.log('isLoading 123', isLoading);
-  console.log('token 123', token);
-  console.log('AsyncStorage 123', AsyncStorage.getItem("token"));
+  // console.log(444444444, SecureStore.getItem('123123'));
 
   const fetchData = useCallback(async () => {
-    if (session) {
-      try {
-        const response = await AccountInfo();
-        setUserName(response?.fullname);
-      } catch (error) {
-        console.error('Error fetching account info:', error);
-      }
+    try {
+      const response = await AccountInfo();
+      setUserName(response?.fullname);
+    } catch (error) {
+      console.error('Error fetching account info:', error);
     }
-  }, [session]);
+  }, []);
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -53,8 +45,7 @@ const styles = StyleSheet.create({
     gap: 6,
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
-    flex: 6,
+    flex: 2,
   },
   text: {
     flex: 1,

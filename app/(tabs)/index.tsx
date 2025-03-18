@@ -1,31 +1,20 @@
-'use dom';
-import { Button, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import Header from '../../components/Header';
 import TopPlacesCarousel from '../../components/ComImg/TopPlacesCarousel';
 import { communityPosts, featuredVideos, liveEvents, TOP_PLACES, upcomingEvents } from '@/data';
-import { useEffect } from 'react';
-import { useSession } from '@/auth/ctx';
 import CommunityPostsSection from '@/components/CommunityPostsSection';
 import LiveEventsSection from '@/components/LiveEventsSection';
 import UpcomingEventsSection from '@/components/UpcomingEventsSection';
 import FeaturedVideosSection from '@/components/FeaturedVideosSection';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function HomeScreen() {
-  const { signIn, signOut } = useSession();
+  const insets = useSafeAreaInsets();
 
-  useEffect(() => {
-    setTimeout(() => {}, 10000);
-  }, []);
-
-  const hand = () => {
-    signIn();
-  };
-  const logout = () => {
-    signOut();
-  };
   return (
-    <SafeAreaView style={styles.container}>
-      <Header />
+    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <Header />
+      </View>
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -56,6 +45,15 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 5,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
   },
   footer: {
     height: 20,
