@@ -1,8 +1,9 @@
 import type React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'; 
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import SectionHeader from './SectionHeader';
 import { LiveEvent } from '@/schemaForm/liveEvent';
 import { Eye } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 interface LiveEventsSectionProps {
   events: LiveEvent[];
@@ -11,18 +12,21 @@ interface LiveEventsSectionProps {
 const LiveEventsSection: React.FC<LiveEventsSectionProps> = ({ events }) => {
   return (
     <View style={styles.container}>
-      <SectionHeader title="Đang Phát Sóng" actionText="Xem tất cả" />
+      <SectionHeader linkto="/video" title="Đang Phát Sóng" actionText="Xem tất cả" />
 
       <View style={styles.eventsContainer}>
         {events.map((event, index) => (
-          <TouchableOpacity key={index} style={styles.eventCard}>
+          <TouchableOpacity
+            onPress={() => router.push(`/video/${event.id}`)}
+            key={index}
+            style={styles.eventCard}
+          >
             <View style={styles.imageContainer}>
-              <Image source={{ uri: event.imageUrl }} style={styles.image} />
+              <Image source={{ uri: event.imageUrl }} style={styles.image} alt={event.title} />
               <View style={styles.liveTag}>
                 <Text style={styles.liveText}>• LIVE</Text>
               </View>
             </View>
-
             <View style={styles.eventInfo}>
               <Text style={styles.eventTitle} numberOfLines={2}>
                 {event.title}
@@ -30,8 +34,6 @@ const LiveEventsSection: React.FC<LiveEventsSectionProps> = ({ events }) => {
               <Text style={styles.eventOrganizer}>{event.organizer}</Text>
               <View style={styles.viewsContainer}>
                 <Eye size={20} color="#6B7280" />
-
-                {/* <Image source={require('../../assets/icons/eye.png')} style={styles.eyeIcon} /> */}
                 <Text style={styles.viewsText}>{event.viewCount} người xem</Text>
               </View>
             </View>

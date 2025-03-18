@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import SectionHeader from './SectionHeader';
 import { Calendar, MapPin, Users } from 'lucide-react-native';
 import { UpcomingEvents } from '@/schemaForm/liveEvent';
+import { router } from 'expo-router';
 
 interface UpcomingEventsSectionProps {
   events: UpcomingEvents[];
@@ -11,11 +12,15 @@ interface UpcomingEventsSectionProps {
 const UpcomingEventsSection: React.FC<UpcomingEventsSectionProps> = ({ events }) => {
   return (
     <View style={styles.container}>
-      <SectionHeader title="Sắp Diễn Ra" actionText="Xem tất cả" />
+      <SectionHeader linkto="/event" title="Sắp Diễn Ra" actionText="Xem tất cả" />
 
       <View style={styles.eventsContainer}>
         {events.map((event, index) => (
-          <View key={index} style={styles.eventCard}>
+          <TouchableOpacity
+            onPress={() => router.push(`/event/${event.id}`)}
+            key={index}
+            style={styles.eventCard}
+          >
             <View style={styles.dateContainer}>
               <Calendar size={16} color="#4a90e2" />
               <Text style={styles.dateText}>
@@ -39,7 +44,7 @@ const UpcomingEventsSection: React.FC<UpcomingEventsSectionProps> = ({ events })
             <TouchableOpacity style={styles.reminderButton}>
               <Text style={styles.reminderButtonText}>Đặt Lịch Nhắc</Text>
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     </View>

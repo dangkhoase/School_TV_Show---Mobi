@@ -1,17 +1,28 @@
 import type React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 interface SectionHeaderProps {
   title: string;
   actionText: string;
+  linkto: string;
   onActionPress?: () => void;
 }
 
-const SectionHeader: React.FC<SectionHeaderProps> = ({ title, actionText, onActionPress }) => (
+const SectionHeader: React.FC<SectionHeaderProps> = ({
+  title,
+  actionText,
+  linkto,
+  onActionPress,
+}) => (
   <View style={styles.container}>
     <Text style={styles.title}>{title}</Text>
-    <TouchableOpacity style={styles.actionButton} onPress={onActionPress}>
+    <TouchableOpacity
+      onFocus={() => router.push(linkto as any)}
+      style={styles.actionButton}
+      onPress={onActionPress}
+    >
       <Text style={styles.actionText}>{actionText}</Text>
       <ChevronRight size={16} color="#4a90e2" />
     </TouchableOpacity>

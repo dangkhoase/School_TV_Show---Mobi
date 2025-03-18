@@ -110,7 +110,7 @@ export default function ProfileScreen() {
               <Text style={styles.username}>{user.username}</Text>
               <Text style={styles.bio}>{user.bio}</Text>
             </View>
-            <TouchableOpacity style={styles.editButton}>
+            <TouchableOpacity onPress={()=>router.push("/update-account")} style={styles.editButton}>
               <Edit size={18} color="#6C63FF" />
             </TouchableOpacity>
           </View>

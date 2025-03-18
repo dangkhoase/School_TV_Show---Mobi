@@ -1,8 +1,9 @@
 import type React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'; 
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import SectionHeader from './SectionHeader';
 import { FeaturedVideos } from '@/schemaForm/liveEvent';
 import { Eye } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 interface FeaturedVideosSectionProps {
   videos: FeaturedVideos[];
@@ -17,11 +18,15 @@ const FeaturedVideosSection: React.FC<FeaturedVideosSectionProps> = ({ videos })
 
   return (
     <View style={styles.container}>
-      <SectionHeader title="Video Nổi Bật" actionText="Xem tất cả" />
+      <SectionHeader linkto="/video" title="Video Nổi Bật" actionText="Xem tất cả" />
 
       <View style={styles.videosContainer}>
         {videos.map((video, index) => (
-          <TouchableOpacity key={index} style={styles.videoCard}>
+          <TouchableOpacity
+            onPress={() => router.push(`/video/${video.id}`)}
+            key={index}
+            style={styles.videoCard}
+          >
             <View style={styles.thumbnailContainer}>
               <Image source={{ uri: video.thumbnailUrl }} style={styles.thumbnail} />
               <View style={styles.durationTag}>

@@ -1,8 +1,9 @@
 import type React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'; 
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import SectionHeader from './SectionHeader';
 import { Heart, MessageCircle, Share2 } from 'lucide-react-native';
 import { communityPosts } from '@/schemaForm/liveEvent';
+import { router } from 'expo-router';
 
 interface CommunityPostsSectionProps {
   posts: communityPosts[];
@@ -11,11 +12,15 @@ interface CommunityPostsSectionProps {
 const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) => {
   return (
     <View style={styles.container}>
-      <SectionHeader title="Bài Viết Cộng Đồng" actionText="Xem tất cả" />
+      <SectionHeader linkto="/post" title="Bài Viết Cộng Đồng" actionText="Xem tất cả" />
 
       <View style={styles.postsContainer}>
         {posts.map((post, index) => (
-          <View key={index} style={styles.postCard}>
+          <TouchableOpacity
+            onPress={() => router.push(`/post/${post.id}`)}
+            key={index}
+            style={styles.postCard}
+          >
             <View style={styles.postHeader}>
               <Image source={{ uri: post.authorImageUrl }} style={styles.authorImage} />
               <View style={styles.authorInfo}>
@@ -44,7 +49,7 @@ const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) 
                 <Text style={styles.actionText}>Chia sẻ</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     </View>
