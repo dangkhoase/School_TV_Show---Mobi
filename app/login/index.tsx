@@ -104,8 +104,11 @@ const LoginScreen: React.FC = () => {
               leftIcon={<Lock size={20} color="#6B7280" />}
               secureTextEntry
             />
-            <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            <TouchableOpacity
+              onFocus={() => router.push('/forgot-password')}
+              style={styles.forgotPassword}
+            >
+              <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
             </TouchableOpacity>
             <Button
               title="Sign In"

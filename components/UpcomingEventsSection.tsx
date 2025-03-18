@@ -10,6 +10,11 @@ interface UpcomingEventsSectionProps {
 }
 
 const UpcomingEventsSection: React.FC<UpcomingEventsSectionProps> = ({ events }) => {
+   const formatDuration = (seconds: number) => {
+     const minutes = Math.floor(seconds / 60);
+     const remainingSeconds = seconds % 60;
+     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+   };
   return (
     <View style={styles.container}>
       <SectionHeader linkto="/event" title="Sắp Diễn Ra" actionText="Xem tất cả" />

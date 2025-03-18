@@ -2,12 +2,8 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import ComAvatar from './ComAvatar';
 import { useCallback, useEffect, useState } from 'react';
 import { AccountInfo } from '@/api/useApi';
-import { useFocusEffect } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 export default function Header() {
   const [userName, setUserName] = useState('');
-  // console.log(444444444, SecureStore.getItem('123123'));
-
   const fetchData = useCallback(async () => {
     try {
       const response = await AccountInfo();

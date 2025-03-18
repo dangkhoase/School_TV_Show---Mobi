@@ -10,6 +10,11 @@ interface CommunityPostsSectionProps {
 }
 
 const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) => {
+    const formatDuration = (seconds: number) => {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
   return (
     <View style={styles.container}>
       <SectionHeader linkto="/post" title="Bài Viết Cộng Đồng" actionText="Xem tất cả" />

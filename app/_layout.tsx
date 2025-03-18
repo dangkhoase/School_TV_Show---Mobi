@@ -38,6 +38,8 @@ export default function RootLayout() {
             <Stack.Screen name="video" options={{ headerShown: false }} />
             <Stack.Screen name="post" options={{ headerShown: false }} />
             <Stack.Screen name="event" options={{ headerShown: false }} />
+            <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
+            <Stack.Screen name="reset-password" options={{ headerShown: false }} />
             <Stack.Screen name="update-account" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>

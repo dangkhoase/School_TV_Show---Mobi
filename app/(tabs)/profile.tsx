@@ -110,7 +110,10 @@ export default function ProfileScreen() {
               <Text style={styles.username}>{user.username}</Text>
               <Text style={styles.bio}>{user.bio}</Text>
             </View>
-            <TouchableOpacity onPress={()=>router.push("/update-account")} style={styles.editButton}>
+            <TouchableOpacity
+              onPress={() => router.push('/update-account')}
+              style={styles.editButton}
+            >
               <Edit size={18} color="#6C63FF" />
             </TouchableOpacity>
           </View>
@@ -138,7 +141,7 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Hoạt động gần đây</Text>
           <View style={styles.activityContainer}>
-            <TouchableOpacity onPress={()=>router.replace('/test/2')} style={styles.activityItem}>
+            <TouchableOpacity onPress={() => router.replace('/')} style={styles.activityItem}>
               <View style={[styles.activityIcon, { backgroundColor: '#FFE8EC' }]}>
                 <Heart size={20} color="#FF4D67" />
               </View>
@@ -176,7 +179,10 @@ export default function ProfileScreen() {
               <ChevronRight size={20} color="#999" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.settingItem}>
+            <TouchableOpacity
+              onPress={() => router.push('/reset-password')}
+              style={styles.settingItem}
+            >
               <View style={[styles.settingIcon, { backgroundColor: '#F0F0F0' }]}>
                 <Lock size={20} color="#333" />
               </View>
