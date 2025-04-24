@@ -19,7 +19,7 @@ export interface LoginFormData {
 // ---- (4) Hàm đăng ký (register) ----
 export const registerApi = async (data: RegisterFormData) => {
   try {
-    const response = await axiosInstance.post('/api/Account/register', data);
+    const response = await axiosInstance.post('/api/accounts/register', data);
     return response.data; // JSON trả về từ server
   } catch (error) {
     console.error('registerApi error:', error);
@@ -30,7 +30,7 @@ export const registerApi = async (data: RegisterFormData) => {
 // ---- (5) Hàm đăng nhập (login) ----
 export const loginApi = async (data: LoginFormData) => {
   try {
-    const response = await axiosInstance.post('/api/Account/login', data);
+    const response = await axiosInstance.post('/api/accounts/login', data);
     return response.data;
   } catch (error) {
     // console.error('loginApi error:', error);

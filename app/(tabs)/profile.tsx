@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -30,24 +30,38 @@ import {
   User,
   Lock,
 } from 'lucide-react-native';
-import { useSession } from '@/auth/ctx';  
+import { useSession } from '@/auth/ctx';
+import { AccountInfo } from '@/api/useApi';
+import { UserProfile } from '@/types/authTypes';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { signOut } = useSession();
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [animation] = useState(new Animated.Value(0));
- 
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await AccountInfo();
+      setUser(response);
+      console.log('User data:', response);
+    } catch (error) {
+      console.error('Error fetching account info:', error);
+    }
+  }, []);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   // Mock user data
-  const user = {
-    name: 'Nguyễn Văn A',
-    username: '@nguyenvana',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    bio: 'Sinh viên Đại học Bách Khoa Hà Nội | Yêu thích công nghệ và thiết kế',
-    followers: 1254,
-    following: 348,
-    posts: 42,
-  };
+  // const user = {
+  //   name: 'Nguyễn Văn A',
+  //   username: '@nguyenvana',
+  //   avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+  //   bio: 'Sinh viên Đại học Bách Khoa Hà Nội | Yêu thích công nghệ và thiết kế',
+  //   followers: 1254,
+  //   following: 348,
+  //   posts: 42,
+  // };
 
   const handleLogout = async () => {
     try {
@@ -104,11 +118,11 @@ export default function ProfileScreen() {
         {/* Profile Info */}
         <View style={styles.profileSection}>
           <View style={styles.profileHeader}>
-            <Image source={{ uri: user.avatar }} style={styles.avatar} />
+            <Image source={{ uri: user?.avatar || "https://randomuser.me/api/portraits/men/32.jpg" }} style={styles.avatar} />
             <View style={styles.profileInfo}>
-              <Text style={styles.name}>{user.name}</Text>
-              <Text style={styles.username}>{user.username}</Text>
-              <Text style={styles.bio}>{user.bio}</Text>
+              <Text style={styles.name}>{user?.fullname}</Text>
+              <Text style={styles.username}>{user?.username}</Text>
+              <Text style={styles.bio}>{user?.email}</Text>
             </View>
             <TouchableOpacity
               onPress={() => router.push('/update-account')}
@@ -121,17 +135,17 @@ export default function ProfileScreen() {
           {/* Stats */}
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user.posts}</Text>
+              <Text style={styles.statNumber}>{user?.posts}</Text>
               <Text style={styles.statLabel}>Bài viết</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user.followers}</Text>
+              <Text style={styles.statNumber}>{user?.followers}</Text>
               <Text style={styles.statLabel}>Người theo dõi</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user.following}</Text>
+              <Text style={styles.statNumber}>{user?.following}</Text>
               <Text style={styles.statLabel}>Đang theo dõi</Text>
             </View>
           </View>
