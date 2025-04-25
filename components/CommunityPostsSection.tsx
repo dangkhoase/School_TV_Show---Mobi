@@ -4,9 +4,10 @@ import SectionHeader from './SectionHeader';
 import { Heart, MessageCircle, Share2 } from 'lucide-react-native';
 import { communityPosts } from '@/schemaForm/liveEvent';
 import { router } from 'expo-router';
+import { Combined } from '@/types/combined';
 
 interface CommunityPostsSectionProps {
-  posts: communityPosts[];
+  posts: Combined[];
 }
 
 const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) => {
@@ -15,6 +16,29 @@ const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) 
       const remainingSeconds = seconds % 60;
       return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
+  function formatDateTime(dateString: string) {
+    const date = new Date(dateString);
+
+    // Kiểm tra nếu đối tượng Date không hợp lệ
+    if (isNaN(date.getTime())) {
+      return 'Lỗi: Định dạng ngày giờ không hợp lệ.';
+    }
+  
+    // Lấy các thành phần giờ, phút, giây
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+    // Lấy các thành phần ngày, tháng, năm
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+  
+    // Định dạng theo yêu cầu: giờ:phút:giây đến ngày/tháng/năm
+    const formattedDate = `${hours}:${minutes}:${seconds}-${day}/${month}/${year}`;
+    
+    return formattedDate;
+  }
   return (
     <View style={styles.container}>
       <SectionHeader linkto="/post" title="Bài Viết Cộng Đồng" actionText="Xem tất cả" />
@@ -22,21 +46,22 @@ const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) 
       <View style={styles.postsContainer}>
         {posts.map((post, index) => (
           <TouchableOpacity
-            onPress={() => router.push(`/post/${post.id}`)}
+            onPress={() => router.push(`/post/${post.$id}`)}
             key={index}
             style={styles.postCard}
           >
             <View style={styles.postHeader}>
-              <Image source={{ uri: post.authorImageUrl }} style={styles.authorImage} />
+              <Image source={{ uri: post.authorImageUrl||"https://picsum.photos/seed/undefined/32/32" }} style={styles.authorImage} />
               <View style={styles.authorInfo}>
-                <Text style={styles.authorName}>{post.authorName}</Text>
-                <Text style={styles.postTime}>{post.timeAgo} trước</Text>
+                <Text style={styles.authorName}>{post?.schoolChannel?.name}</Text>
+                <Text style={styles.postTime}>{formatDateTime(post.createdAt)}</Text>
               </View>
             </View>
 
+            <Text style={{...styles.postContent,fontSize:"larger"}}>{post.title}</Text>
             <Text style={styles.postContent}>{post.content}</Text>
 
-            {post.imageUrl && <Image source={{ uri: post.imageUrl }} style={styles.postImage} />}
+            {post.newsPictures && <Image source={{ uri: `data:image/jpeg;base64,${post?.newsPictures?.$values[0]?.fileData}` }} style={styles.postImage} />}
 
             <View style={styles.postActions}>
               <TouchableOpacity style={styles.actionButton}>
@@ -104,7 +129,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   postContent: {
-    fontSize: 14,
+    // fontSize: 14,
     color: '#333',
     marginBottom: 12,
     lineHeight: 20,

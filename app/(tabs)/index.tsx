@@ -7,9 +7,29 @@ import LiveEventsSection from '@/components/LiveEventsSection';
 import UpcomingEventsSection from '@/components/UpcomingEventsSection';
 import FeaturedVideosSection from '@/components/FeaturedVideosSection';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useCallback, useEffect, useState } from 'react';
+import { NewsCombined, Schedules, VideoHistoryActive } from '@/api/useApi';
+import { ScheduleTimeline } from '@/types/authTypes';
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const [schedules, setSchedules] = useState<ScheduleTimeline[]>([]);
+  const [PostNews, setPostNews] = useState([]);
 
+  const [liveEvents, setLiveEvents] = useState([]);
+  const [featuredVideos, setFeaturedVideos] = useState([]);
+  const [communityPosts, setCommunityPosts] = useState([]);
+  const fetchData = useCallback(async () => {
+    const response = await Schedules();
+    const combined = await NewsCombined();
+    const videoapi = await VideoHistoryActive();
+    setSchedules(response.data.Upcoming.$values);
+    setCommunityPosts(combined.$values);
+    setFeaturedVideos(videoapi.$values);
+    console.log(videoapi.$values);
+  }, []);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
@@ -24,7 +44,7 @@ export default function HomeScreen() {
         <LiveEventsSection events={liveEvents} />
 
         {/* Upcoming Events Section */}
-        <UpcomingEventsSection events={upcomingEvents} />
+        <UpcomingEventsSection events={schedules} />
 
         {/* Featured Videos Section */}
         <FeaturedVideosSection videos={featuredVideos} />

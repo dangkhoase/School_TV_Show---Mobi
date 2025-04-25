@@ -52,16 +52,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-  // Mock user data
-  // const user = {
-  //   name: 'Nguyễn Văn A',
-  //   username: '@nguyenvana',
-  //   avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-  //   bio: 'Sinh viên Đại học Bách Khoa Hà Nội | Yêu thích công nghệ và thiết kế',
-  //   followers: 1254,
-  //   following: 348,
-  //   posts: 42,
-  // };
+ 
 
   const handleLogout = async () => {
     try {

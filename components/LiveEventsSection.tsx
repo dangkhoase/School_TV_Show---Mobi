@@ -13,7 +13,11 @@ const LiveEventsSection: React.FC<LiveEventsSectionProps> = ({ events }) => {
   return (
     <View style={styles.container}>
       <SectionHeader linkto="/video" title="Đang Phát Sóng" actionText="Xem tất cả" />
-
+      {events.length === 0 && (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>Không có sự kiện nào đang phát sóng.</Text>
+        </View>
+      )}
       <View style={styles.eventsContainer}>
         {events.map((event, index) => (
           <TouchableOpacity
@@ -45,6 +49,17 @@ const LiveEventsSection: React.FC<LiveEventsSectionProps> = ({ events }) => {
 };
 
 const styles = StyleSheet.create({
+  noEventsContainer: {
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  noEventsText: { 
+    textAlign: 'center',
+    color: '#666',
+    fontSize: 16,
+  },
   container: {
     marginVertical: 10,
     paddingHorizontal: 16,

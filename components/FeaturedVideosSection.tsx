@@ -1,12 +1,12 @@
 import type React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import SectionHeader from './SectionHeader';
-import { FeaturedVideos } from '@/schemaForm/liveEvent';
-import { Eye } from 'lucide-react-native';
+import { Clock, Eye } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { VideoHistory } from '@/types/videoHistory';
 
 interface FeaturedVideosSectionProps {
-  videos: FeaturedVideos[];
+  videos: VideoHistory[];
 }
 
 const FeaturedVideosSection: React.FC<FeaturedVideosSectionProps> = ({ videos }) => {
@@ -16,6 +16,29 @@ const FeaturedVideosSection: React.FC<FeaturedVideosSectionProps> = ({ videos })
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
+  function formatDateTime(dateString: string) {
+    const date = new Date(dateString);
+
+    // Kiểm tra nếu đối tượng Date không hợp lệ
+    if (isNaN(date.getTime())) {
+      return 'Lỗi: Định dạng ngày giờ không hợp lệ.';
+    }
+
+    // Lấy các thành phần giờ, phút, giây
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // Lấy các thành phần ngày, tháng, năm
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+
+    // Định dạng theo yêu cầu: giờ:phút:giây đến ngày/tháng/năm
+    const formattedDate = `${hours}:${minutes}-${day}/${month}/${year}`;
+
+    return formattedDate;
+  }
   return (
     <View style={styles.container}>
       <SectionHeader linkto="/video" title="Video Nổi Bật" actionText="Xem tất cả" />
@@ -23,25 +46,25 @@ const FeaturedVideosSection: React.FC<FeaturedVideosSectionProps> = ({ videos })
       <View style={styles.videosContainer}>
         {videos.map((video, index) => (
           <TouchableOpacity
-            onPress={() => router.push(`/video/${video.id}`)}
+            onPress={() => router.push(`/video/${video.$id}`)}
             key={index}
             style={styles.videoCard}
           >
             <View style={styles.thumbnailContainer}>
-              <Image source={{ uri: video.thumbnailUrl }} style={styles.thumbnail} />
-              <View style={styles.durationTag}>
+              <Image source={{ uri: video.playbackUrl }} style={styles.thumbnail} />
+              {/* <View style={styles.durationTag}>
                 <Text style={styles.durationText}>{formatDuration(video.durationSeconds)}</Text>
-              </View>
+              </View> */}
             </View>
 
             <View style={styles.videoInfo}>
               <View style={styles.profileContainer}>
-                <Image source={{ uri: video.profileImageUrl }} style={styles.profileImage} />
+                <Image source={{ uri: video.profileImageUrl || "https://picsum.photos/seed/5/300/180" }} style={styles.profileImage} />
                 <View style={styles.titleContainer}>
                   <Text style={styles.videoTitle} numberOfLines={2}>
-                    {video.title}
+                    {video.program.schoolChannel.name}
                   </Text>
-                  <Text style={styles.channelName}>{video.channelName}</Text>
+                  <Text style={styles.channelName}>{video.program.programName}123</Text>
                 </View>
               </View>
 
@@ -51,7 +74,11 @@ const FeaturedVideosSection: React.FC<FeaturedVideosSectionProps> = ({ videos })
                   {/* <Image source={require('../../assets/icons/eye.png')} style={styles.statIcon} /> */}
                   <Text style={styles.statText}>{video.viewCount} lượt xem</Text>
                 </View>
-                <Text style={styles.timeText}>{video.timeAgo} trước</Text>
+                <View style={styles.statItem}>
+                  <Clock size={20} color="#6B7280" /> 
+                  <Text style={styles.timeText}>{formatDateTime(video.updatedAt)}</Text>
+                  </View>
+
               </View>
             </View>
           </TouchableOpacity>

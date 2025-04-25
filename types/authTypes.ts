@@ -24,3 +24,41 @@ export interface UserProfile {
   address: string
   phoneNumber: string
 }
+export interface ScheduleTimeline {
+  $id: string
+  scheduleID: number
+  programID: number
+  startTime: string
+  endTime: string
+  status: string
+  liveStreamStarted: boolean
+  liveStreamEnded: boolean
+  isReplay: boolean
+  videoHistoryID: number
+  program: Program
+}
+
+export interface Program {
+  $id: string
+  programID: number
+  schoolChannelID: number
+  cloudflareStreamId: string
+  programName: string
+  title: string
+  status: string
+  schoolChannel: any
+  createdAt: string
+  updatedAt: string
+  schedules: Schedules
+  videoHistories: any
+  programFollows: any
+}
+
+export interface Schedules {
+  $id: string
+  $values: Value[]
+}
+
+export interface Value {
+  $ref: string
+}

@@ -1,20 +1,39 @@
 import type React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'; 
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import SectionHeader from './SectionHeader';
 import { Calendar, MapPin, Users } from 'lucide-react-native';
-import { UpcomingEvents } from '@/schemaForm/liveEvent';
 import { router } from 'expo-router';
+import { ScheduleTimeline } from '@/types/authTypes';
 
 interface UpcomingEventsSectionProps {
-  events: UpcomingEvents[];
+  events: ScheduleTimeline[];
 }
 
 const UpcomingEventsSection: React.FC<UpcomingEventsSectionProps> = ({ events }) => {
-   const formatDuration = (seconds: number) => {
-     const minutes = Math.floor(seconds / 60);
-     const remainingSeconds = seconds % 60;
-     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-   };
+ 
+  function formatDateTime(dateString: string) {
+    const date = new Date(dateString);
+
+    // Kiểm tra nếu đối tượng Date không hợp lệ
+    if (isNaN(date.getTime())) {
+      return 'Lỗi: Định dạng ngày giờ không hợp lệ.';
+    }
+  
+    // Lấy các thành phần giờ, phút, giây
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+    // Lấy các thành phần ngày, tháng, năm
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+  
+    // Định dạng theo yêu cầu: giờ:phút:giây đến ngày/tháng/năm
+    const formattedDate = `${hours}:${minutes}:${seconds}-${day}/${month}/${year}`;
+    
+    return formattedDate;
+  }
   return (
     <View style={styles.container}>
       <SectionHeader linkto="/event" title="Sắp Diễn Ra" actionText="Xem tất cả" />
@@ -22,29 +41,28 @@ const UpcomingEventsSection: React.FC<UpcomingEventsSectionProps> = ({ events })
       <View style={styles.eventsContainer}>
         {events.map((event, index) => (
           <TouchableOpacity
-            onPress={() => router.push(`/event/${event.id}`)}
+            onPress={() => router.push(`/event/${event.$id}`)}
             key={index}
             style={styles.eventCard}
           >
             <View style={styles.dateContainer}>
               <Calendar size={16} color="#4a90e2" />
               <Text style={styles.dateText}>
-                {event.date} - {event.time}
+                {formatDateTime(event.startTime)} - {formatDateTime(event.endTime)}
               </Text>
             </View>
+            <Text style={styles.eventTitle}>{event.program.title}</Text>
+            {/* <Text style={styles.eventOrganizer}>{event.organizer}</Text> */}
 
-            <Text style={styles.eventTitle}>{event.title}</Text>
-            <Text style={styles.eventOrganizer}>{event.organizer}</Text>
-
-            <View style={styles.locationContainer}>
+            {/* <View style={styles.locationContainer}>
               <MapPin size={16} color="#666" />
               <Text style={styles.locationText}>{event.location}</Text>
-            </View>
+            </View> */}
 
-            <View style={styles.participantsContainer}>
+            {/* <View style={styles.participantsContainer}>
               <Users size={16} color="#666" />
               <Text style={styles.participantsText}>{event.participants} người tham gia</Text>
-            </View>
+            </View> */}
 
             <TouchableOpacity style={styles.reminderButton}>
               <Text style={styles.reminderButtonText}>Đặt Lịch Nhắc</Text>
