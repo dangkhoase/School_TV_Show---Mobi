@@ -110,3 +110,33 @@ export const getEventById = async (id: string | number) => {
   }
 };
 
+// Lấy danh sách thông báo
+export const getNotifications = async (page: number = 1, pageSize: number = 20) => {
+  try {
+    const response = await axiosInstance.get(`/api/notifications/my?page=${page}&pageSize=${pageSize}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Lấy danh sách video với phân trang
+export const getAllVideoHistory = async (page: number = 1, pageSize: number = 10) => {
+  try {
+    const response = await axiosInstance.get(`/api/VideoHistory/all?page=${page}&pageSize=${pageSize}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Lấy danh sách video theo kênh
+export const getVideoHistoryByChannel = async (channelId: number, page: number = 1, pageSize: number = 10) => {
+  try {
+    const response = await axiosInstance.get(`/api/VideoHistory/by-channel/${channelId}?page=${page}&pageSize=${pageSize}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+

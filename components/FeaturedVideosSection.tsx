@@ -42,12 +42,12 @@ const FeaturedVideosSection: React.FC<FeaturedVideosSectionProps> = ({ videos })
   }
   return (
     <View style={styles.container}>
-      <SectionHeader linkto="/video" title="Video Nổi Bật" actionText="Xem tất cả" />
+      <SectionHeader linkto="/VideoHistory" title="Video Nổi Bật" actionText="Xem tất cả" />
 
       <View style={styles.videosContainer}>
         {videos.map((video, index) => (
           <TouchableOpacity
-            onPress={() => router.push(`/video/${video.$id}`)}
+            onPress={() => router.push(`/VideoHistory/${video.$id}`)}
             key={index}
             style={styles.videoCard}
           >
