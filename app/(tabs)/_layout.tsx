@@ -1,6 +1,6 @@
 import { useSession } from '@/auth/ctx';
 import { Redirect, Tabs } from 'expo-router';
-import { Bell, Compass, Home, User } from 'lucide-react-native';
+import { Bell, Home, User } from 'lucide-react-native';
 import { GestureResponderEvent, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -84,26 +84,7 @@ export default function TabLayout() {
             />
           ),
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarButton: (props) => (
-            <TabButton
-              isFocused={props.accessibilityState?.selected ?? false}
-              onPress={props.onPress || (() => {})} // Tránh trường hợp undefined
-              label="Explore"
-              icon={
-                <Compass
-                  size={24}
-                  color={props?.accessibilityState?.selected ? '#6C63FF' : '#888888'}
-                />
-              }
-            />
-          ),
-        }}
-      />
+      /> 
       <Tabs.Screen
         name="notifications"
         options={{
