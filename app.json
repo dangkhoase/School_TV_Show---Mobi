@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true
     },
@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.toannv1712.schooltvshowmobi"
     },
     "web": {
       "bundler": "metro",
@@ -33,7 +34,7 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store" 
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

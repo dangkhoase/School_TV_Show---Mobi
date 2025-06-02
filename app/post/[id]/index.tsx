@@ -16,80 +16,29 @@ import { StatusBar } from 'expo-status-bar';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Heart, MessageCircle, Share2, Send } from 'lucide-react-native';
-
-// Mock data for community posts
-const communityPostsData = [
-  {
-    id: '1',
-    authorName: 'ĐH Ngoại Thương',
-    authorImageUrl: 'https://randomuser.me/api/portraits/men/75.jpg',
-    content:
-      'Chúc mừng đội tuyển sinh viên FTU đã đạt giải Nhất cuộc thi "Marketing Challenge 2023" ! Tự hào về các bạn 🎉',
-    imageUrl:
-      'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop',
-    timeAgo: '2 giờ',
-    likes: 126,
-    comments: 35,
-  },
-];
-
-// Mock comments data
-const commentsData = [
-  {
-    id: '1',
-    postId: '1',
-    authorName: 'Nguyễn Văn A',
-    authorImageUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-    content: 'Xin chúc mừng các bạn! Thật tự hào về thành tích này.',
-    timeAgo: '1 giờ',
-    likes: 12,
-  },
-  {
-    id: '2',
-    postId: '1',
-    authorName: 'Trần Thị B',
-    authorImageUrl: 'https://randomuser.me/api/portraits/women/44.jpg',
-    content: 'Các bạn đã làm rất tốt! Hy vọng sẽ có nhiều thành công hơn nữa trong tương lai.',
-    timeAgo: '45 phút',
-    likes: 8,
-  },
-  {
-    id: '3',
-    postId: '1',
-    authorName: 'Lê Văn C',
-    authorImageUrl: 'https://randomuser.me/api/portraits/men/62.jpg',
-    content: 'Thật tuyệt vời! Đây là minh chứng cho sự nỗ lực không ngừng của các bạn.',
-    timeAgo: '30 phút',
-    likes: 5,
-  },
-];
+import { getPostById } from '@/api/useApi';
+import { Combined } from '@/types/combined';
 
 export default function PostDetailScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams();
-  const [post, setPost] = useState(null);
-  const [comments, setComments] = useState([]);
+  const [post, setPost] = useState<Combined | null>(null);
   const [liked, setLiked] = useState(false);
   const [commentText, setCommentText] = useState('');
-  const [likedComments, setLikedComments] = useState({});
+  const [likedComments, setLikedComments] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    // Find the post by id
-    const foundPost = communityPostsData.find((p) => p.id === id);
-    if (foundPost) {
-      setPost(foundPost);
-    }
-
-    // Filter comments for this post
-    const postComments = commentsData.filter((c) => c.postId === id);
-    setComments(postComments);
+    if (!id) return;
+    getPostById(id as string)
+      .then((data) => setPost(data))
+      .catch(() => setPost(null));
   }, [id]);
 
   const handleLikePost = () => {
     setLiked(!liked);
   };
 
-  const handleLikeComment = (commentId) => {
+  const handleLikeComment = (commentId: string) => {
     setLikedComments((prev) => ({
       ...prev,
       [commentId]: !prev[commentId],
@@ -98,18 +47,6 @@ export default function PostDetailScreen() {
 
   const handleAddComment = () => {
     if (!commentText.trim()) return;
-
-    const newComment = {
-      id: String(comments.length + 1),
-      postId: id,
-      authorName: 'Bạn',
-      authorImageUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-      content: commentText,
-      timeAgo: 'Vừa xong',
-      likes: 0,
-    };
-
-    setComments([...comments, newComment]);
     setCommentText('');
   };
 
@@ -141,20 +78,33 @@ export default function PostDetailScreen() {
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           <View style={styles.postCard}>
             <View style={styles.postHeader}>
-              <Image source={{ uri: post.authorImageUrl }} style={styles.authorImage} />
+              <Image 
+                source={{ 
+                  uri: post.schoolChannel?.logoUrl || "https://picsum.photos/seed/undefined/32/32" 
+                }} 
+                style={styles.authorImage} 
+              />
               <View style={styles.authorInfo}>
-                <Text style={styles.authorName}>{post.authorName}</Text>
-                <Text style={styles.postTime}>{post.timeAgo} trước</Text>
+                <Text style={styles.authorName}>{post.schoolChannel?.name}</Text>
+                <Text style={styles.postTime}>{new Date(post.createdAt).toLocaleDateString()}</Text>
               </View>
             </View>
 
+            <Text style={[styles.postContent, { fontSize: 18, fontWeight: 'bold' }]}>{post.title}</Text>
             <Text style={styles.postContent}>{post.content}</Text>
 
-            {post.imageUrl && <Image source={{ uri: post.imageUrl }} style={styles.postImage} />}
+            {post.newsPictures?.$values?.[0] && (
+              <Image 
+                source={{ 
+                  uri: `data:image/jpeg;base64,${post.newsPictures.$values[0].fileData}` 
+                }} 
+                style={styles.postImage} 
+              />
+            )}
 
             <View style={styles.postStats}>
               <Text style={styles.statText}>
-                {liked ? post.likes + 1 : post.likes} lượt thích • {comments.length} bình luận
+                {liked ? 1 : 0} lượt thích • 0 bình luận
               </Text>
             </View>
 
@@ -181,45 +131,13 @@ export default function PostDetailScreen() {
           </View>
 
           <View style={styles.commentsSection}>
-            <Text style={styles.commentsTitle}>Bình luận ({comments.length})</Text>
-
-            {comments.map((comment) => (
-              <View key={comment.id} style={styles.commentItem}>
-                <Image source={{ uri: comment.authorImageUrl }} style={styles.commentAuthorImage} />
-                <View style={styles.commentContent}>
-                  <View style={styles.commentBubble}>
-                    <Text style={styles.commentAuthorName}>{comment.authorName}</Text>
-                    <Text style={styles.commentText}>{comment.content}</Text>
-                  </View>
-
-                  <View style={styles.commentActions}>
-                    <TouchableOpacity
-                      style={styles.commentAction}
-                      onPress={() => handleLikeComment(comment.id)}
-                    >
-                      <Text
-                        style={[
-                          styles.commentActionText,
-                          likedComments[comment.id] && { color: '#EF4444' },
-                        ]}
-                      >
-                        Thích
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.commentAction}>
-                      <Text style={styles.commentActionText}>Phản hồi</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.commentTime}>{comment.timeAgo}</Text>
-                  </View>
-                </View>
-              </View>
-            ))}
+            <Text style={styles.commentsTitle}>Bình luận (0)</Text>
           </View>
         </ScrollView>
 
         <View style={styles.inputContainer}>
           <Image
-            source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
+            source={{ uri: 'https://picsum.photos/seed/undefined/32/32' }}
             style={styles.inputAvatar}
           />
           <TextInput
@@ -354,53 +272,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#111827',
     marginBottom: 16,
-  },
-  commentItem: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  commentAuthorImage: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    marginRight: 12,
-  },
-  commentContent: {
-    flex: 1,
-  },
-  commentBubble: {
-    backgroundColor: '#F3F4F6',
-    borderRadius: 12,
-    padding: 12,
-  },
-  commentAuthorName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  commentText: {
-    fontSize: 14,
-    color: '#374151',
-    lineHeight: 20,
-  },
-  commentActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-    paddingLeft: 8,
-  },
-  commentAction: {
-    marginRight: 16,
-  },
-  commentActionText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#6B7280',
-  },
-  commentTime: {
-    fontSize: 12,
-    color: '#9CA3AF',
   },
   inputContainer: {
     flexDirection: 'row',

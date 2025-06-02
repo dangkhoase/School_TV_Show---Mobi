@@ -14,83 +14,28 @@ import {
   ThumbsUp,
   ThumbsDown,
 } from 'lucide-react-native';
-
-// Mock data for featured videos
-const featuredVideosData = [
-  {
-    id: '1',
-    title: 'Top 10 Lý Do Chọn ĐH Bách Khoa',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2071&auto=format&fit=crop',
-    profileImageUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-    channelName: 'ĐH Bách Khoa Hà Nội',
-    viewCount: 10234,
-    timeAgo: '2 ngày',
-    durationSeconds: 924, // 15:24
-    likes: 1250,
-    dislikes: 45,
-    description:
-      'Video giới thiệu về 10 lý do hàng đầu để chọn Đại học Bách Khoa Hà Nội làm nơi học tập và phát triển. Từ chất lượng đào tạo đến cơ hội việc làm và môi trường học tập năng động.',
-  },
-];
-
-// Mock data for related videos
-const relatedVideosData = [
-  {
-    id: '2',
-    title: 'Hướng Dẫn Đăng Ký Học Phần',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop',
-    profileImageUrl: 'https://randomuser.me/api/portraits/women/44.jpg',
-    channelName: 'ĐH Kinh Tế Quốc Dân',
-    viewCount: 8567,
-    timeAgo: '1 tuần',
-    durationSeconds: 1110, // 18:30
-  },
-  {
-    id: '3',
-    title: 'Phỏng vấn Tân Cử Nhân',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1560523159-4a9692d222f9?q=80&w=2070&auto=format&fit=crop',
-    profileImageUrl: 'https://randomuser.me/api/portraits/women/28.jpg',
-    channelName: 'ĐH Ngoại Thương',
-    viewCount: 6245,
-    timeAgo: '3 ngày',
-    durationSeconds: 845, // 14:05
-  },
-  {
-    id: '4',
-    title: 'Highlights Lễ Tốt Nghiệp 2022',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1523289333742-be1143f6b766?q=80&w=2070&auto=format&fit=crop',
-    profileImageUrl: 'https://randomuser.me/api/portraits/men/45.jpg',
-    channelName: 'ĐH Quốc Gia Hà Nội',
-    viewCount: 12453,
-    timeAgo: '6 tháng',
-    durationSeconds: 625, // 10:25
-  },
-];
+import { getVideoHistoryById } from '@/api/useApi';
+import { VideoHistory } from '@/types/videoHistory';
 
 export default function VideoDetailScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams();
-  const [video, setVideo] = useState(null);
+  const [video, setVideo] = useState<VideoHistory | null>(null);
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const formatDuration = (seconds) => {
+  const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
   useEffect(() => {
-    // Find the video by id
-    const foundVideo = featuredVideosData.find((v) => v.id === id);
-    if (foundVideo) {
-      setVideo(foundVideo);
-    }
+    if (!id) return;
+    getVideoHistoryById(id as string)
+      .then((data) => setVideo(data))
+      .catch(() => setVideo(null));
   }, [id]);
 
   const handleLike = () => {
@@ -107,33 +52,6 @@ export default function VideoDetailScreen() {
     setSaved(!saved);
   };
 
-  const renderRelatedVideoItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.relatedVideoItem}
-      onPress={() => router.push(`/video-detail/${item.id}`)}
-    >
-      <View style={styles.relatedThumbnailContainer}>
-        <Image source={{ uri: item.thumbnailUrl }} style={styles.relatedThumbnail} />
-        <View style={styles.relatedDurationTag}>
-          <Text style={styles.relatedDurationText}>{formatDuration(item.durationSeconds)}</Text>
-        </View>
-      </View>
-
-      <View style={styles.relatedVideoInfo}>
-        <Text style={styles.relatedVideoTitle} numberOfLines={2}>
-          {item.title}
-        </Text>
-        <Text style={styles.relatedChannelName}>{item.channelName}</Text>
-
-        <View style={styles.relatedStatsRow}>
-          <Text style={styles.relatedStatText}>{item.viewCount} lượt xem</Text>
-          <Text style={styles.relatedStatText}>•</Text>
-          <Text style={styles.relatedStatText}>{item.timeAgo} trước</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
   if (!video) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -148,7 +66,7 @@ export default function VideoDetailScreen() {
 
       {/* Video Player */}
       <View style={styles.videoContainer}>
-        <Image source={{ uri: video.thumbnailUrl }} style={styles.videoThumbnail} />
+        <Image source={{ uri: video.schedules?.$values?.[0]?.thumbnail || 'https://picsum.photos/seed/5/300/180' }} style={styles.videoThumbnail} />
         <View style={styles.videoOverlay} />
 
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -166,16 +84,16 @@ export default function VideoDetailScreen() {
       <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
         {/* Video Info */}
         <View style={styles.videoInfoContainer}>
-          <Text style={styles.videoTitle}>{video.title}</Text>
+          <Text style={styles.videoTitle}>{video.program?.title}</Text>
 
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Eye size={16} color="#6B7280" />
-              <Text style={styles.statText}>{video.viewCount} lượt xem</Text>
+              <Text style={styles.statText}>0 lượt xem</Text>
             </View>
             <View style={styles.statItem}>
               <Clock size={16} color="#6B7280" />
-              <Text style={styles.statText}>{video.timeAgo} trước</Text>
+              <Text style={styles.statText}>{video.streamAt}</Text>
             </View>
           </View>
 
@@ -188,7 +106,7 @@ export default function VideoDetailScreen() {
                 fill={liked ? '#6C63FF' : 'none'}
               />
               <Text style={[styles.actionText, liked && styles.activeActionText]}>
-                {liked ? video.likes + 1 : video.likes}
+                {liked ? 1 : 0}
               </Text>
             </TouchableOpacity>
 
@@ -199,7 +117,7 @@ export default function VideoDetailScreen() {
                 fill={disliked ? '#EF4444' : 'none'}
               />
               <Text style={[styles.actionText, disliked && styles.dislikedText]}>
-                {disliked ? video.dislikes + 1 : video.dislikes}
+                {disliked ? 1 : 0}
               </Text>
             </TouchableOpacity>
 
@@ -221,9 +139,9 @@ export default function VideoDetailScreen() {
 
         {/* Channel Info */}
         <View style={styles.channelContainer}>
-          <Image source={{ uri: video.profileImageUrl }} style={styles.channelImage} />
+          <Image source={{ uri: video.program?.schoolChannel?.logoUrl || 'https://picsum.photos/seed/5/300/180' }} style={styles.channelImage} />
           <View style={styles.channelInfo}>
-            <Text style={styles.channelName}>{video.channelName}</Text>
+            <Text style={styles.channelName}>{video.program?.schoolChannel?.name}</Text>
             <TouchableOpacity style={styles.subscribeButton}>
               <Text style={styles.subscribeText}>Theo dõi</Text>
             </TouchableOpacity>
@@ -238,8 +156,7 @@ export default function VideoDetailScreen() {
         {/* Related Videos */}
         <View style={styles.relatedVideosContainer}>
           <Text style={styles.relatedVideosTitle}>Video liên quan</Text>
-
-          {relatedVideosData.map((item) => renderRelatedVideoItem({ item }))}
+          {/* Có thể fetch thêm video liên quan ở đây nếu muốn */}
         </View>
       </ScrollView>
     </View>

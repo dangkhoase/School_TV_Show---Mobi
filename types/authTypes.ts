@@ -23,6 +23,10 @@ export interface UserProfile {
   fullname: string
   address: string
   phoneNumber: string
+  avatar:string
+  posts:string
+  followers:string
+  following:string
 }
 export interface ScheduleTimeline {
   $id: string

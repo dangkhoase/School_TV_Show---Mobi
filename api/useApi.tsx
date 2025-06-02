@@ -42,3 +42,23 @@ export const VideoHistoryActive = async () => {
   }
 };
 
+// Lấy chi tiết video theo id
+export const getVideoHistoryById = async (id: string | number) => {
+  try {
+    const response = await axiosInstance.get(`/api/VideoHistory/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Lấy chi tiết bài viết theo id
+export const getPostById = async (id: string | number) => {
+  try {
+    const response = await axiosInstance.get(`/api/News/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+

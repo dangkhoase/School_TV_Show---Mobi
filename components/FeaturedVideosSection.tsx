@@ -51,34 +51,39 @@ const FeaturedVideosSection: React.FC<FeaturedVideosSectionProps> = ({ videos })
             style={styles.videoCard}
           >
             <View style={styles.thumbnailContainer}>
-              <Image source={{ uri: video.playbackUrl }} style={styles.thumbnail} />
-              {/* <View style={styles.durationTag}>
-                <Text style={styles.durationText}>{formatDuration(video.durationSeconds)}</Text>
-              </View> */}
+              <Image 
+                source={{ 
+                  uri: video.schedules.$values[0]?.thumbnail || "https://picsum.photos/seed/5/300/180" 
+                }} 
+                style={styles.thumbnail} 
+              />
             </View>
 
             <View style={styles.videoInfo}>
               <View style={styles.profileContainer}>
-                <Image source={{ uri: video.profileImageUrl || "https://picsum.photos/seed/5/300/180" }} style={styles.profileImage} />
+                <Image 
+                  source={{ 
+                    uri: video.program.schoolChannel.logoUrl || "https://picsum.photos/seed/5/300/180"
+                  }} 
+                  style={styles.profileImage} 
+                />
                 <View style={styles.titleContainer}>
                   <Text style={styles.videoTitle} numberOfLines={2}>
-                    {video.program.schoolChannel.name}
+                    {video.program.title}
                   </Text>
-                  <Text style={styles.channelName}>{video.program.programName}123</Text>
+                  <Text style={styles.channelName}>{video.program.schoolChannel.name}</Text>
                 </View>
               </View>
 
               <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
                   <Eye size={20} color="#6B7280" />
-                  {/* <Image source={require('../../assets/icons/eye.png')} style={styles.statIcon} /> */}
-                  <Text style={styles.statText}>{video.viewCount} lượt xem</Text>
+                  <Text style={styles.statText}>0 lượt xem</Text>
                 </View>
                 <View style={styles.statItem}>
                   <Clock size={20} color="#6B7280" /> 
-                  <Text style={styles.timeText}>{formatDateTime(video.updatedAt)}</Text>
+                  <Text style={styles.timeText}>{formatDateTime(video.streamAt)}</Text>
                   </View>
-
               </View>
             </View>
           </TouchableOpacity>
@@ -173,10 +178,12 @@ const styles = StyleSheet.create({
   statText: {
     fontSize: 12,
     color: '#666',
+    marginLeft: 4,
   },
   timeText: {
     fontSize: 12,
     color: '#666',
+    marginLeft: 4,
   },
 });
 

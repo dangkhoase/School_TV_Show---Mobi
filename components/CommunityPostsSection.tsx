@@ -51,14 +51,14 @@ const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) 
             style={styles.postCard}
           >
             <View style={styles.postHeader}>
-              <Image source={{ uri: post.authorImageUrl||"https://picsum.photos/seed/undefined/32/32" }} style={styles.authorImage} />
+              <Image source={{ uri: post.schoolChannel?.logoUrl || "https://picsum.photos/seed/undefined/32/32" }} style={styles.authorImage} />
               <View style={styles.authorInfo}>
                 <Text style={styles.authorName}>{post?.schoolChannel?.name}</Text>
                 <Text style={styles.postTime}>{formatDateTime(post.createdAt)}</Text>
               </View>
             </View>
 
-            <Text style={{...styles.postContent,fontSize:"larger"}}>{post.title}</Text>
+            <Text style={[styles.postContent, { fontSize: 16, fontWeight: 'bold' }]}>{post.title}</Text>
             <Text style={styles.postContent}>{post.content}</Text>
 
             {post.newsPictures && <Image source={{ uri: `data:image/jpeg;base64,${post?.newsPictures?.$values[0]?.fileData}` }} style={styles.postImage} />}
@@ -66,12 +66,12 @@ const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) 
             <View style={styles.postActions}>
               <TouchableOpacity style={styles.actionButton}>
                 <Heart size={18} color="#666" />
-                <Text style={styles.actionText}>{post.likes}</Text>
+                <Text style={styles.actionText}>0</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.actionButton}>
                 <MessageCircle size={18} color="#666" />
-                <Text style={styles.actionText}>{post.comments}</Text>
+                <Text style={styles.actionText}>0</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.actionButton}>

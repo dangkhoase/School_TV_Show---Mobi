@@ -53,6 +53,7 @@ export interface SchoolChannel {
   account: any
   news: News
   followers: any
+  logoUrl: string
 }
 
 export interface News {

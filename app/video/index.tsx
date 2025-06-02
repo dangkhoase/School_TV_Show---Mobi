@@ -16,8 +16,19 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Search, Filter, Eye, Clock } from 'lucide-react-native';
 
+interface VideoItem {
+  id: string;
+  title: string;
+  thumbnailUrl: string;
+  profileImageUrl: string;
+  channelName: string;
+  viewCount: number;
+  timeAgo: string;
+  durationSeconds: number;
+}
+
 // Mock data for featured videos
-const featuredVideosData = [
+const featuredVideosData: VideoItem[] = [
   {
     id: '1',
     title: 'Top 10 Lý Do Chọn ĐH Bách Khoa',
@@ -80,7 +91,7 @@ export default function FeaturedVideosScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
-  const formatDuration = (seconds) => {
+  const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
@@ -100,7 +111,7 @@ export default function FeaturedVideosScreen() {
     }, 1500);
   };
 
-  const renderVideoItem = ({ item }) => (
+  const renderVideoItem = ({ item }: { item: VideoItem }) => (
     <TouchableOpacity
       style={styles.videoCard}
       onPress={() => router.push(`/video/${item.id}`)}

@@ -10,26 +10,31 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCallback, useEffect, useState } from 'react';
 import { NewsCombined, Schedules, VideoHistoryActive } from '@/api/useApi';
 import { ScheduleTimeline } from '@/types/authTypes';
+import { VideoHistory } from '@/types/videoHistory';
+
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [schedules, setSchedules] = useState<ScheduleTimeline[]>([]);
   const [PostNews, setPostNews] = useState([]);
-
   const [liveEvents, setLiveEvents] = useState([]);
-  const [featuredVideos, setFeaturedVideos] = useState([]);
+  const [featuredVideos, setFeaturedVideos] = useState<VideoHistory[]>([]);
   const [communityPosts, setCommunityPosts] = useState([]);
+
   const fetchData = useCallback(async () => {
     const response = await Schedules();
     const combined = await NewsCombined();
     const videoapi = await VideoHistoryActive();
-    setSchedules(response.data.Upcoming.$values);
-    setCommunityPosts(combined.$values);
-    setFeaturedVideos(videoapi.$values);
-    console.log(videoapi.$values);
+    
+    // Limit to 3 items
+    setSchedules(response.data.Upcoming.$values.slice(0, 3));
+    setCommunityPosts(combined.$values.slice(0, 3));
+    setFeaturedVideos(videoapi.$values.slice(0, 3));
   }, []);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
@@ -42,16 +47,9 @@ export default function HomeScreen() {
       >
         <TopPlacesCarousel list={TOP_PLACES} />
         <LiveEventsSection events={liveEvents} />
-
-        {/* Upcoming Events Section */}
         <UpcomingEventsSection events={schedules} />
-
-        {/* Featured Videos Section */}
         <FeaturedVideosSection videos={featuredVideos} />
-
-        {/* Community Posts Section */}
         <CommunityPostsSection posts={communityPosts} />
-
         <View style={styles.footer} />
       </ScrollView>
     </SafeAreaView>
