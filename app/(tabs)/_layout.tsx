@@ -1,8 +1,8 @@
-import { Redirect, Tabs } from 'expo-router';
-import { Text, View, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSession } from '@/auth/ctx';
-import { Home, Compass, User, Bell } from 'lucide-react-native';
+import { Redirect, Tabs } from 'expo-router';
+import { Bell, Compass, Home, User } from 'lucide-react-native';
+import { GestureResponderEvent, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface TabButtonProps {
   isFocused: boolean;

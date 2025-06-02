@@ -1,16 +1,16 @@
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import Header from '../../components/Header';
-import TopPlacesCarousel from '../../components/ComImg/TopPlacesCarousel';
-import { communityPosts, featuredVideos, liveEvents, TOP_PLACES, upcomingEvents } from '@/data';
+import { Lives, NewsCombined, Schedules, VideoHistoryActive } from '@/api/useApi';
 import CommunityPostsSection from '@/components/CommunityPostsSection';
+import FeaturedVideosSection from '@/components/FeaturedVideosSection';
 import LiveEventsSection from '@/components/LiveEventsSection';
 import UpcomingEventsSection from '@/components/UpcomingEventsSection';
-import FeaturedVideosSection from '@/components/FeaturedVideosSection';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useCallback, useEffect, useState } from 'react';
-import { NewsCombined, Schedules, VideoHistoryActive } from '@/api/useApi';
+import { TOP_PLACES } from '@/data';
 import { ScheduleTimeline } from '@/types/authTypes';
 import { VideoHistory } from '@/types/videoHistory';
+import { useCallback, useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import TopPlacesCarousel from '../../components/ComImg/TopPlacesCarousel';
+import Header from '../../components/Header';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -24,11 +24,15 @@ export default function HomeScreen() {
     const response = await Schedules();
     const combined = await NewsCombined();
     const videoapi = await VideoHistoryActive();
+    const LiveAPi = await Lives();
     
     // Limit to 3 items
     setSchedules(response.data.Upcoming.$values.slice(0, 3));
     setCommunityPosts(combined.$values.slice(0, 3));
     setFeaturedVideos(videoapi.$values.slice(0, 3));
+    setLiveEvents(LiveAPi.data.LiveNow.$values.slice(0, 3)); 
+
+    
   }, []);
 
   useEffect(() => {

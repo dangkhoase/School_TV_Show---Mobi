@@ -1,10 +1,10 @@
 import type React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import SectionHeader from './SectionHeader';
-import { Heart, MessageCircle, Share2 } from 'lucide-react-native';
-import { communityPosts } from '@/schemaForm/liveEvent';
-import { router } from 'expo-router';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+ 
 import { Combined } from '@/types/combined';
+import { router } from 'expo-router';
+import { Heart, MessageCircle, Share2 } from 'lucide-react-native';
+import SectionHeader from './SectionHeader';
 
 interface CommunityPostsSectionProps {
   posts: Combined[];
@@ -46,7 +46,7 @@ const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) 
       <View style={styles.postsContainer}>
         {posts.map((post, index) => (
           <TouchableOpacity
-            onPress={() => router.push(`/post/${post.$id}`)}
+            onPress={() => router.push(`/post/${post.newsID}`)}
             key={index}
             style={styles.postCard}
           >

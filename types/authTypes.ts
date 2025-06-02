@@ -40,6 +40,7 @@ export interface ScheduleTimeline {
   isReplay: boolean
   videoHistoryID: number
   program: Program
+  thumbnail: string
 }
 
 export interface Program {

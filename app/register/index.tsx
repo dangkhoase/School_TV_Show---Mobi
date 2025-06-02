@@ -1,27 +1,27 @@
 'use client';
 
+import { registerApi, type RegisterFormData } from '@/api/authApi';
+import { FormNumericInput, FormTextInput } from '@/components/from-inputs';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Link, router } from 'expo-router';
+import { Home, Lock, Mail, Phone, User } from 'lucide-react-native';
 import type React from 'react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
-  View,
-  Text,
-  StyleSheet,
+  ActivityIndicator,
   Alert,
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
+  Pressable,
   ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { registerApi, type RegisterFormData } from '@/api/authApi';
-import { Link, router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient'; 
-import { Button } from '@rneui/themed';
-import { Lock, Mail, User, Home, Phone } from 'lucide-react-native';
-import { FormNumericInput, FormTextInput } from '@/components/from-inputs';
 
 // Define validation schema with Zod
 const registerSchema = z
@@ -180,19 +180,24 @@ const RegisterScreen: React.FC = () => {
                 leftIcon={<Phone size={20} color="#6B7280" />}
               />
 
-              <Button
-                title="Đăng Ký"
+              <Pressable
                 onPress={handleSubmit(onSubmit)}
                 disabled={loading}
-                buttonStyle={styles.signInButton}
-                titleStyle={styles.buttonTitle}
-                disabledStyle={styles.disabledButton}
-                icon={
-                  loading ? (
-                    <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
-                  ) : undefined
-                }
-              />
+                style={({ pressed }) => [
+                  styles.signInButton,
+                  pressed && styles.pressedButton,
+                  loading && styles.disabledButton,
+                ]}
+              >
+                <View style={styles.buttonContent}>
+                  {loading && (
+                    <ActivityIndicator color="white" size="small" style={styles.loadingIndicator} />
+                  )}
+                  <Text style={[styles.buttonTitle, loading && styles.buttonTitleDisabled]}>
+                    Đăng Ký
+                  </Text>
+                </View>
+              </Pressable>
             </View>
           </ScrollView>
 
@@ -256,13 +261,42 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 50,
     marginTop: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  pressedButton: {
+    backgroundColor: '#5A52E0',
+    transform: [{ scale: 0.98 }],
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  loadingIndicator: {
+    marginRight: 10,
   },
   buttonTitle: {
+    color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  buttonTitleDisabled: {
+    opacity: 0.7,
   },
   disabledButton: {
     backgroundColor: 'rgba(108, 99, 255, 0.5)',
+    elevation: 0,
+    shadowOpacity: 0,
   },
   footerContainer: {
     flexDirection: 'row',

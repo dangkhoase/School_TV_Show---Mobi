@@ -1,15 +1,50 @@
-import type React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import SectionHeader from './SectionHeader';
-import { LiveEvent } from '@/schemaForm/liveEvent';
-import { Eye } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { Clock, Users } from 'lucide-react-native';
+import type React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import SectionHeader from './SectionHeader';
+
+interface Program {
+  programID: number;
+  programName: string;
+  title: string;
+  schoolChannel: {
+    name: string;
+    logoUrl: string;
+  };
+}
+
+interface LiveEvent {
+  $id: string;
+  scheduleID: number;
+  programID: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  liveStreamStarted: boolean;
+  liveStreamEnded: boolean;
+  isReplay: boolean;
+  thumbnail: string;
+  videoHistoryID: number;
+  program: Program;
+}
 
 interface LiveEventsSectionProps {
   events: LiveEvent[];
 }
 
 const LiveEventsSection: React.FC<LiveEventsSectionProps> = ({ events }) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
     <View style={styles.container}>
       <SectionHeader linkto="/video" title="Đang Phát Sóng" actionText="Xem tất cả" />
@@ -19,26 +54,46 @@ const LiveEventsSection: React.FC<LiveEventsSectionProps> = ({ events }) => {
         </View>
       )}
       <View style={styles.eventsContainer}>
-        {events.map((event, index) => (
+        {events.map((event) => (
           <TouchableOpacity
-            onPress={() => router.push(`/video/${event.id}`)}
-            key={index}
+            onPress={() => router.push(`/video/${event.$id}`)}
+            key={event.$id}
             style={styles.eventCard}
           >
             <View style={styles.imageContainer}>
-              <Image source={{ uri: event.imageUrl }} style={styles.image} alt={event.title} />
-              <View style={styles.liveTag}>
-                <Text style={styles.liveText}>• LIVE</Text>
-              </View>
+              <Image
+                source={{ uri: event.thumbnail }}
+                style={styles.image}
+                alt={event.program.title}
+              />
+              {event.liveStreamStarted && !event.liveStreamEnded && (
+                <View style={styles.liveTag}>
+                  <Text style={styles.liveText}>• LIVE</Text>
+                </View>
+              )}
             </View>
             <View style={styles.eventInfo}>
               <Text style={styles.eventTitle} numberOfLines={2}>
-                {event.title}
+                {event.program.title}
               </Text>
-              <Text style={styles.eventOrganizer}>{event.organizer}</Text>
+              <View style={styles.channelInfo}>
+                <Image
+                  source={{ uri: event.program.schoolChannel.logoUrl }}
+                  style={styles.channelLogo}
+                />
+                <Text style={styles.channelName}>{event.program.schoolChannel.name}</Text>
+              </View>
+              <View style={styles.timeContainer}>
+                <Clock size={16} color="#6B7280" />
+                <Text style={styles.timeText}>
+                  {formatDate(event.startTime)} - {formatDate(event.endTime)}
+                </Text>
+              </View>
               <View style={styles.viewsContainer}>
-                <Eye size={20} color="#6B7280" />
-                <Text style={styles.viewsText}>{event.viewCount} người xem</Text>
+                <Users size={16} color="#6B7280" />
+                <Text style={styles.viewsText}>
+                  {event.liveStreamStarted && !event.liveStreamEnded ? 'Đang phát sóng' : 'Sắp phát sóng'}
+                </Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -49,17 +104,6 @@ const LiveEventsSection: React.FC<LiveEventsSectionProps> = ({ events }) => {
 };
 
 const styles = StyleSheet.create({
-  noEventsContainer: {
-    padding: 16,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 12,
-    marginBottom: 12,
-  },
-  noEventsText: { 
-    textAlign: 'center',
-    color: '#666',
-    fontSize: 16,
-  },
   container: {
     marginVertical: 10,
     paddingHorizontal: 16,
@@ -107,25 +151,52 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 4,
+    marginBottom: 8,
   },
-  eventOrganizer: {
+  channelInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  channelLogo: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    marginRight: 8,
+  },
+  channelName: {
     fontSize: 14,
     color: '#666',
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 8,
+  },
+  timeText: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 4,
   },
   viewsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  eyeIcon: {
-    width: 16,
-    height: 16,
-    marginRight: 4,
-  },
   viewsText: {
     fontSize: 12,
     color: '#666',
+    marginLeft: 4,
+  },
+  noEventsContainer: {
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  noEventsText: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: 16,
   },
 });
 

@@ -1,29 +1,29 @@
 // src/screens/LoginScreen.tsx
+import { useSession } from '@/auth/ctx';
+import { useStorageState } from '@/auth/useStorageState';
+import { FormTextInput } from '@/components/from-inputs';
+import { Formlogin, loginSchema } from '@/schemaForm/login';
+import { zodResolver } from '@hookform/resolvers/zod';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Link, router } from 'expo-router';
+import { Lock, Mail } from 'lucide-react-native';
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
+  ActivityIndicator,
   Alert,
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { LoginFormData } from '../../types/authTypes';
 import { loginApi } from '../../api/authApi';
-import { Link, router } from 'expo-router';
-import { useSession } from '@/auth/ctx';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Lock, Mail } from 'lucide-react-native';
-import { FormTextInput } from '@/components/from-inputs';
-import { Button } from '@rneui/themed';
-import { Formlogin, loginSchema } from '@/schemaForm/login';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form'; 
-import { useStorageState } from '@/auth/useStorageState';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LoginFormData } from '../../types/authTypes';
 const LoginScreen: React.FC = () => {
   const {
     control,
@@ -32,8 +32,8 @@ const LoginScreen: React.FC = () => {
   } = useForm<Formlogin>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'khoa1243@e.com',
-      password: 'Khoa1234.',
+      email: 'admin@example.com',
+      password: '12345Aa@',
     },
   });
   const { signIn } = useSession();
@@ -109,19 +109,24 @@ const LoginScreen: React.FC = () => {
             >
               <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
             </TouchableOpacity>
-            <Button
-              title="Sign In"
+            <Pressable
               onPress={handleSubmit(onSubmit)}
               disabled={loading}
-              buttonStyle={styles.signInButton}
-              titleStyle={styles.buttonTitle}
-              disabledStyle={styles.disabledButton}
-              icon={
-                loading ? (
-                  <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
-                ) : undefined
-              }
-            />
+              style={({ pressed }) => [
+                styles.signInButton,
+                pressed && styles.pressedButton,
+                loading && styles.disabledButton,
+              ]}
+            >
+              <View style={styles.buttonContent}>
+                {loading && (
+                  <ActivityIndicator color="white" size="small" style={styles.loadingIndicator} />
+                )}
+                <Text style={[styles.buttonTitle, loading && styles.buttonTitleDisabled]}>
+                  Sign In
+                </Text>
+              </View>
+            </Pressable>
           </View>
         </KeyboardAvoidingView>
         <View style={styles.footerContainer}>
@@ -192,13 +197,42 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  pressedButton: {
+    backgroundColor: '#5A52E0',
+    transform: [{ scale: 0.98 }],
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  loadingIndicator: {
+    marginRight: 10,
   },
   buttonTitle: {
+    color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  buttonTitleDisabled: {
+    opacity: 0.7,
   },
   disabledButton: {
     backgroundColor: 'rgba(108, 99, 255, 0.5)',
+    elevation: 0,
+    shadowOpacity: 0,
   },
   dividerContainer: {
     flexDirection: 'row',

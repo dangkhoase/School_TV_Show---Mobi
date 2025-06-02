@@ -1,9 +1,10 @@
 import type React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import SectionHeader from './SectionHeader';
-import { Clock, Eye } from 'lucide-react-native';
-import { router } from 'expo-router';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+ 
 import { VideoHistory } from '@/types/videoHistory';
+import { router } from 'expo-router';
+import { Clock, Eye } from 'lucide-react-native';
+import SectionHeader from './SectionHeader';
 
 interface FeaturedVideosSectionProps {
   videos: VideoHistory[];

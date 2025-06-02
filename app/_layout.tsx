@@ -1,15 +1,13 @@
-import '../global.css';
+import { SessionProvider } from '@/auth/ctx';
+import { AuthProvider } from '@/auth/useAuth';
+import { StorageProvider } from '@/Context/StorageContext';
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { SessionProvider } from '@/auth/ctx';
-import { StorageProvider } from '@/Context/StorageContext';
-import * as SecureStore from 'expo-secure-store';
-import { AuthProvider } from '@/auth/useAuth';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 

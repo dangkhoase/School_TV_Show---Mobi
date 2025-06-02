@@ -25,6 +25,24 @@ export const Schedules = async () => {
     throw error;
   }
 };
+
+export const Lives = async () => {
+  try {
+    const response = await axiosInstance.get('/api/Schedule/timeline'); 
+    return response.data; // JSON trả về từ server
+  } catch (error) {
+    throw error;
+  }
+};
+export const LivesById = async (id: string | number) => {
+  try {
+    const response = await axiosInstance.get(`/api/Schedule/by-channel-and-date?channelId=${id}&date=${new Date().toISOString().split('T')[0]}`);
+    return response.data; // JSON trả về từ server
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const NewsCombined = async () => {
   try {
     const response = await axiosInstance.get('/api/News/combined?page=1&pageSize=3');
@@ -56,6 +74,36 @@ export const getVideoHistoryById = async (id: string | number) => {
 export const getPostById = async (id: string | number) => {
   try {
     const response = await axiosInstance.get(`/api/News/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Lấy comments của video
+export const getVideoComments = async (videoId: number) => {
+  try {
+    const response = await axiosInstance.get(`/api/Comment/video/${videoId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Gửi comment mới
+export const postComment = async (data: { content: string; videoHistoryID: number }) => {
+  try {
+    const response = await axiosInstance.post('/api/Comment', data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Lấy chi tiết event theo id
+export const getEventById = async (id: string | number) => {
+  try {
+    const response = await axiosInstance.get(`/api/Schedule/${id}`);
     return response.data;
   } catch (error) {
     throw error;

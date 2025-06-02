@@ -1,27 +1,27 @@
 'use client';
 
+import { registerApi, type RegisterFormData } from '@/api/authApi';
+import { FormNumericInput, FormTextInput } from '@/components/from-inputs';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Link, router } from 'expo-router';
+import { Home, Lock, Mail, Phone, User } from 'lucide-react-native';
 import type React from 'react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
-  View,
-  Text,
-  StyleSheet,
+  ActivityIndicator,
   Alert,
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
+  Pressable,
   ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { registerApi, type RegisterFormData } from '@/api/authApi';
-import { Link, router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient'; 
-import { Button } from '@rneui/themed';
-import { Lock, Mail, User, Home, Phone } from 'lucide-react-native';
-import { FormNumericInput, FormTextInput } from '@/components/from-inputs';
 
 // Define validation schema with Zod
 const registerSchema = z
@@ -176,19 +176,18 @@ const RegisterScreen: React.FC = () => {
                 leftIcon={<Phone size={20} color="#6B7280" />}
               />
 
-              <Button
-                title="Đăng Ký"
+              <Pressable
                 onPress={handleSubmit(onSubmit)}
                 disabled={loading}
-                buttonStyle={styles.signInButton}
-                titleStyle={styles.buttonTitle}
-                disabledStyle={styles.disabledButton}
-                icon={
-                  loading ? (
+                style={[styles.signInButton, loading && styles.disabledButton]}
+              >
+                <Text style={styles.buttonTitle}>
+                  {loading ? (
                     <ActivityIndicator color="white" size="small" style={{ marginRight: 10 }} />
-                  ) : undefined
-                }
-              />
+                  ) : null}
+                  Đăng Ký
+                </Text>
+              </Pressable>
             </View>
           </ScrollView>
 
