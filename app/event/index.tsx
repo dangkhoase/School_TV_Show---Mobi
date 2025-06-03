@@ -1,97 +1,83 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-  RefreshControl,
-} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { Schedules } from '@/api/useApi';
+import { ScheduleTimeline } from '@/types/authTypes';
 import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { ArrowLeft, Bell, Calendar, Filter, MapPin, Search, Users } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArrowLeft, Search, Filter, Calendar, MapPin, Users, Bell } from 'lucide-react-native';
-
-// Mock data for upcoming events
-const upcomingEventsData = [
-  {
-    id: '1',
-    title: 'Lễ Trao Bằng Tốt Nghiệp 2023',
-    date: '25/12/2023',
-    time: '14:00',
-    organizer: 'ĐH Quốc Gia Hà Nội',
-    location: 'Hội trường A1',
-    participants: 2000,
-  },
-  {
-    id: '2',
-    title: 'Cuộc thi Hackathon Blockchain 2025',
-    date: '20/11/2023',
-    time: '6:00',
-    organizer: 'Tôn Đức Thắng',
-    location: 'Sân trường',
-    participants: 500,
-  },
-  {
-    id: '3',
-    title: 'Hội thảo: Trí Tuệ Nhân Tạo',
-    date: '27/12/2023',
-    time: '09:00',
-    organizer: 'ĐH Bách Khoa Hà Nội',
-    location: 'Phòng Hội Thảo C5',
-    participants: 500,
-  },
-  {
-    id: '4',
-    title: 'Workshop: Kỹ năng mềm cho sinh viên',
-    date: '05/01/2024',
-    time: '13:30',
-    organizer: 'ĐH Kinh Tế Quốc Dân',
-    location: 'Hội trường B2',
-    participants: 300,
-  },
-  {
-    id: '5',
-    title: 'Triển lãm Công nghệ 2024',
-    date: '05/01/2024',
-    time: '08:00',
-    organizer: 'ĐH Công Nghệ',
-    location: 'Nhà thi đấu ĐHQG',
-    participants: 1500,
-  },
-];
 
 export default function UpcomingEventsScreen() {
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [events, setEvents] = useState<ScheduleTimeline[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredEvents = upcomingEventsData.filter(
-    (event) =>
-      (event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.organizer.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (activeFilter === 'all' ||
-        (activeFilter === 'workshop' && event.title.toLowerCase().includes('workshop')) ||
-        (activeFilter === 'graduation' && event.title.toLowerCase().includes('tốt nghiệp')) ||
-        (activeFilter === 'seminar' && event.title.toLowerCase().includes('hội thảo')))
-  );
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    // Simulate fetching data
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1500);
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const response = await Schedules();
+      setEvents(response.data.Upcoming.$values);
+      setError(null);
+    } catch (err) {
+      setError('Không thể tải danh sách sự kiện. Vui lòng thử lại sau.');
+      console.error('Error fetching events:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const renderEventItem = ({ item }) => (
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchEvents();
+    setRefreshing(false);
+  };
+
+  const filteredEvents = events.filter(
+    (event) =>
+      (event.program.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.program.schoolChannel.name.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (activeFilter === 'all' ||
+        (activeFilter === 'workshop' && event.program.title.toLowerCase().includes('workshop')) ||
+        (activeFilter === 'graduation' && event.program.title.toLowerCase().includes('tốt nghiệp')) ||
+        (activeFilter === 'seminar' && event.program.title.toLowerCase().includes('hội thảo')))
+  );
+
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Lỗi: Định dạng ngày giờ không hợp lệ.';
+
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${hours}:${minutes}-${day}/${month}/${year}`;
+  };
+
+  const renderEventItem = ({ item }: { item: ScheduleTimeline }) => (
     <TouchableOpacity
       style={styles.eventCard}
-      onPress={() => router.push(`/event/${item.id}`)}
+      onPress={() => router.push(`/event/${item.$id}`)}
     >
       <View style={styles.upcomingTag}>
         <Text style={styles.upcomingText}>Sắp diễn ra</Text>
@@ -100,22 +86,22 @@ export default function UpcomingEventsScreen() {
       <View style={styles.dateContainer}>
         <Calendar size={16} color="#4A90E2" />
         <Text style={styles.dateText}>
-          {item.date} - {item.time}
+          {formatDateTime(item.startTime)} - {formatDateTime(item.endTime)}
         </Text>
       </View>
 
-      <Text style={styles.eventTitle}>{item.title}</Text>
-      <Text style={styles.organizerName}>{item.organizer}</Text>
+      <Text style={styles.eventTitle}>{item.program.title}</Text>
+      <Text style={styles.organizerName}>{item.program.schoolChannel.name}</Text>
 
       <View style={styles.eventDetails}>
         <View style={styles.detailItem}>
           <MapPin size={16} color="#6B7280" />
-          <Text style={styles.detailText}>{item.location}</Text>
+          <Text style={styles.detailText}>{item.program.schoolChannel.address || 'Chưa có địa điểm'}</Text>
         </View>
 
         <View style={styles.detailItem}>
           <Users size={16} color="#6B7280" />
-          <Text style={styles.detailText}>{item.participants} người tham gia</Text>
+          <Text style={styles.detailText}>0 người tham gia</Text>
         </View>
       </View>
 
@@ -131,6 +117,22 @@ export default function UpcomingEventsScreen() {
       </View>
     </TouchableOpacity>
   );
+
+  if (loading && !refreshing) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#6C63FF" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -212,7 +214,7 @@ export default function UpcomingEventsScreen() {
       <FlatList
         data={filteredEvents}
         renderItem={renderEventItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.$id}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -241,6 +243,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     flexDirection: 'row',
@@ -408,6 +414,11 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: '#6B7280',
+    textAlign: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
     textAlign: 'center',
   },
 });

@@ -1,7 +1,7 @@
 import { VideoHistory } from '@/types/videoHistory';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { Clock, Eye, Filter } from 'lucide-react-native';
+import { ArrowLeft, Clock, Eye, Filter } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getAllVideoHistory } from '../../api/useApi';
@@ -141,6 +141,9 @@ export default function VideoHistoryScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <ArrowLeft size={24} color="#000" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Video</Text>
         <TouchableOpacity style={styles.filterButton}>
           <Filter size={24} color="#000" />
@@ -181,6 +184,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  backButton: {
+    padding: 8,
   },
   headerTitle: {
     fontSize: 24,

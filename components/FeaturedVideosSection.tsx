@@ -47,7 +47,7 @@ const FeaturedVideosSection: React.FC<FeaturedVideosSectionProps> = ({ videos })
       <View style={styles.videosContainer}>
         {videos.map((video, index) => (
           <TouchableOpacity
-            onPress={() => router.push(`/VideoHistory/${video.$id}`)}
+            onPress={() => router.push(`/VideoHistory/${video.videoHistoryID}`)}
             key={index}
             style={styles.videoCard}
           >

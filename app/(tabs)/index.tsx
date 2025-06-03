@@ -6,6 +6,7 @@ import UpcomingEventsSection from '@/components/UpcomingEventsSection';
 import { TOP_PLACES } from '@/data';
 import { ScheduleTimeline } from '@/types/authTypes';
 import { VideoHistory } from '@/types/videoHistory';
+import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,23 +22,33 @@ export default function HomeScreen() {
   const [communityPosts, setCommunityPosts] = useState([]);
 
   const fetchData = useCallback(async () => {
-    const response = await Schedules();
-    const combined = await NewsCombined();
-    const videoapi = await VideoHistoryActive();
-    const LiveAPi = await Lives();
-    
-    // Limit to 3 items
-    setSchedules(response.data.Upcoming.$values.slice(0, 3));
-    setCommunityPosts(combined.$values.slice(0, 3));
-    setFeaturedVideos(videoapi.$values.slice(0, 3));
-    setLiveEvents(LiveAPi.data.LiveNow.$values.slice(0, 3)); 
-
-    
+    try {
+      const response = await Schedules();
+      const combined = await NewsCombined();
+      const videoapi = await VideoHistoryActive();
+      const LiveAPi = await Lives();
+      
+      // Limit to 3 items
+      setSchedules(response.data.Upcoming.$values.slice(0, 3));
+      setCommunityPosts(combined.$values.slice(0, 3));
+      setFeaturedVideos(videoapi.$values.slice(0, 3));
+      setLiveEvents(LiveAPi.data.LiveNow.$values.slice(0, 3)); 
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }, []);
 
+  // Tải dữ liệu khi component mount
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Tải lại dữ liệu mỗi khi quay lại trang
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>

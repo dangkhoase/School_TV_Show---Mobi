@@ -1,10 +1,10 @@
 import { VideoHistory } from '@/types/videoHistory';
-import { Video } from 'expo-av';
+import { ResizeMode, Video } from 'expo-av';
 import { Image } from 'expo-image';
-import { useLocalSearchParams } from 'expo-router';
-import { Clock, Eye } from 'lucide-react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { ArrowLeft, Clock, Eye } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getVideoHistoryById } from '../../api/useApi';
 
 export default function VideoDetailScreen() {
@@ -61,48 +61,58 @@ export default function VideoDetailScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.videoContainer}>
-        <Video
-          source={{ uri: video.playbackUrl || '' }}
-          style={styles.video}
-          useNativeControls
-          resizeMode="contain"
-        />
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <ArrowLeft size={24} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Chi tiết video</Text>
+        <View style={styles.placeholder} />
       </View>
 
-      <View style={styles.content}>
-        <Text style={styles.title}>{video.program.title}</Text>
-        
-        <View style={styles.channelInfo}>
-          <Image 
-            source={{ uri: video.program.schoolChannel.logoUrl || "https://picsum.photos/seed/5/300/180" }}
-            style={styles.channelLogo}
-            contentFit="cover"
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.videoContainer}>
+          <Video
+            source={{ uri: video.playbackUrl || '' }}
+            style={styles.video}
+            useNativeControls
+            resizeMode={ResizeMode.CONTAIN}
           />
-          <View style={styles.channelDetails}>
-            <Text style={styles.channelName}>{video.program.schoolChannel.name}</Text>
-            <Text style={styles.channelDescription}>{video.program.schoolChannel.description}</Text>
-          </View>
         </View>
 
-        <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Eye size={20} color="#6B7280" />
-            <Text style={styles.statText}>0 lượt xem</Text>
+        <View style={styles.content}>
+          <Text style={styles.title}>{video.program.title}</Text>
+          
+          <View style={styles.channelInfo}>
+            <Image 
+              source={{ uri: video.program.schoolChannel.logoUrl || "https://picsum.photos/seed/5/300/180" }}
+              style={styles.channelLogo}
+              contentFit="cover"
+            />
+            <View style={styles.channelDetails}>
+              <Text style={styles.channelName}>{video.program.schoolChannel.name}</Text>
+              <Text style={styles.channelDescription}>{video.program.schoolChannel.description}</Text>
+            </View>
           </View>
-          <View style={styles.statItem}>
-            <Clock size={20} color="#6B7280" />
-            <Text style={styles.timeText}>{formatDateTime(video.streamAt)}</Text>
-          </View>
-        </View>
 
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.descriptionTitle}>Mô tả</Text>
-          <Text style={styles.description}>{video.description}</Text>
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <Eye size={20} color="#6B7280" />
+              <Text style={styles.statText}>0 lượt xem</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Clock size={20} color="#6B7280" />
+              <Text style={styles.timeText}>{formatDateTime(video.streamAt)}</Text>
+            </View>
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.descriptionTitle}>Mô tả</Text>
+            <Text style={styles.description}>{video.description}</Text>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -114,6 +124,30 @@ const styles = StyleSheet.create({
   centerContent: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  header: {
+    paddingTop: 60,
+    paddingBottom: 15,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000',
+  },
+  placeholder: {
+    width: 40,
+  },
+  scrollView: {
+    flex: 1,
   },
   videoContainer: {
     width: '100%',

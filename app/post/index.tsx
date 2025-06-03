@@ -1,145 +1,120 @@
 'use client';
 
-import { useState } from 'react';
+import { PostNews } from '@/api/useApi';
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { ArrowLeft, Filter, Heart, MessageCircle, Search, Share2 } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
+  ActivityIndicator,
   FlatList,
   Image,
-  TouchableOpacity,
-  TextInput,
   RefreshControl,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArrowLeft, Search, Filter, Heart, MessageCircle, Share2 } from 'lucide-react-native';
-
-// Mock data for community posts
-const communityPostsData = [
-  {
-    id: '1',
-    authorName: 'ĐH Ngoại Thương',
-    authorImageUrl: 'https://randomuser.me/api/portraits/men/75.jpg',
-    content:
-      'Chúc mừng đội tuyển sinh viên FTU đã đạt giải Nhất cuộc thi "Marketing Challenge 2023" ! Tự hào về các bạn 🎉',
-    imageUrl:
-      'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop',
-    timeAgo: '2 giờ',
-    likes: 126,
-    comments: 35,
-  },
-  {
-    id: '2',
-    authorName: 'ĐH Bách Khoa Hà Nội',
-    authorImageUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-    content:
-      'Thông báo: Lịch thi học kỳ 1 năm học 2023-2024 đã được cập nhật trên cổng thông tin sinh viên. Các bạn sinh viên vui lòng kiểm tra và chuẩn bị thật tốt cho kỳ thi sắp tới nhé!',
-    imageUrl: null,
-    timeAgo: '5 giờ',
-    likes: 89,
-    comments: 42,
-  },
-  {
-    id: '3',
-    authorName: 'ĐH Kinh Tế Quốc Dân',
-    authorImageUrl: 'https://randomuser.me/api/portraits/women/28.jpg',
-    content:
-      'Thông báo tuyển sinh chương trình đào tạo thạc sĩ quản trị kinh doanh khóa 2024. Hạn nộp hồ sơ: 15/01/2024. Chi tiết xem tại website của trường.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=2152&auto=format&fit=crop',
-    timeAgo: '1 ngày',
-    likes: 64,
-    comments: 18,
-  },
-  {
-    id: '4',
-    authorName: 'ĐH Sư Phạm Hà Nội',
-    authorImageUrl: 'https://randomuser.me/api/portraits/women/45.jpg',
-    content:
-      'Chúc mừng PGS.TS Nguyễn Văn A đã được trao tặng danh hiệu Nhà giáo ưu tú năm 2023. Đây là niềm tự hào của toàn thể cán bộ, giảng viên và sinh viên nhà trường! 👏👏👏',
-    imageUrl: null,
-    timeAgo: '3 ngày',
-    likes: 215,
-    comments: 28,
-  },
-  {
-    id: '5',
-    authorName: 'ĐH FPT',
-    authorImageUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
-    content:
-      'Hôm nay, Đại học FPT đã ký kết thỏa thuận hợp tác với 5 doanh nghiệp công nghệ hàng đầu, mở ra cơ hội thực tập và việc làm cho sinh viên IT sau khi tốt nghiệp.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop',
-    timeAgo: '4 ngày',
-    likes: 178,
-    comments: 23,
-  },
-];
 
 export default function CommunityPostsScreen() {
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const [likedPosts, setLikedPosts] = useState({});
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredPosts = communityPostsData.filter(
-    (post) =>
-      post.authorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    // Simulate fetching data
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1500);
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const response = await PostNews();
+      setPosts(response.$values);
+      setError(null);
+    } catch (err) {
+      setError('Không thể tải danh sách bài viết. Vui lòng thử lại sau.');
+      console.error('Error fetching posts:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleLikePost = (postId) => {
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchPosts();
+    setRefreshing(false);
+  };
+
+  const handleLikePost = (postId: string) => {
     setLikedPosts((prev) => ({
       ...prev,
       [postId]: !prev[postId],
     }));
   };
 
-  const renderPostItem = ({ item }) => (
+  const filteredPosts = posts.filter(
+    (post) =>
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return 'Vừa xong';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} phút trước`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
+    return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
+  };
+
+  const renderPostItem = ({ item }: { item: any }) => (
     <View style={styles.postCard}>
       <View style={styles.postHeader}>
-        <Image source={{ uri: item.authorImageUrl }} style={styles.authorImage} />
+        <Image 
+          source={{ uri: item.schoolChannel?.logoUrl || "https://picsum.photos/seed/5/300/180" }} 
+          style={styles.authorImage} 
+        />
         <View style={styles.authorInfo}>
-          <Text style={styles.authorName}>{item.authorName}</Text>
-          <Text style={styles.postTime}>{item.timeAgo} trước</Text>
+          <Text style={styles.authorName}>{item.schoolChannel?.name || 'Không xác định'}</Text>
+          <Text style={styles.postTime}>{formatTimeAgo(item.createdAt)}</Text>
         </View>
       </View>
 
       <Text style={styles.postContent}>{item.content}</Text>
 
-      {item.imageUrl && <Image source={{ uri: item.imageUrl }} style={styles.postImage} />}
+      {item.thumbnail && (
+        <Image source={{ uri: item.thumbnail }} style={styles.postImage} />
+      )}
 
       <View style={styles.postStats}>
         <Text style={styles.statText}>
-          {likedPosts[item.id] ? item.likes + 1 : item.likes} lượt thích • {item.comments} bình luận
+          {likedPosts[item.$id] ? (item.likes || 0) + 1 : item.likes || 0} lượt thích • {item.comments || 0} bình luận
         </Text>
       </View>
 
       <View style={styles.postActions}>
-        <TouchableOpacity style={styles.actionButton} onPress={() => handleLikePost(item.id)}>
+        <TouchableOpacity style={styles.actionButton} onPress={() => handleLikePost(item.$id)}>
           <Heart
             size={20}
-            color={likedPosts[item.id] ? '#EF4444' : '#6B7280'}
-            fill={likedPosts[item.id] ? '#EF4444' : 'none'}
+            color={likedPosts[item.$id] ? '#EF4444' : '#6B7280'}
+            fill={likedPosts[item.$id] ? '#EF4444' : 'none'}
           />
-          <Text style={[styles.actionText, likedPosts[item.id] && { color: '#EF4444' }]}>
+          <Text style={[styles.actionText, likedPosts[item.$id] && { color: '#EF4444' }]}>
             Thích
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => router.push(`/post/${item.id}`)}
+          onPress={() => router.push(`/post/${item.$id}`)}
         >
           <MessageCircle size={20} color="#6B7280" />
           <Text style={styles.actionText}>Bình luận</Text>
@@ -152,6 +127,22 @@ export default function CommunityPostsScreen() {
       </View>
     </View>
   );
+
+  if (loading && !refreshing) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#6C63FF" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -181,7 +172,7 @@ export default function CommunityPostsScreen() {
       <FlatList
         data={filteredPosts}
         renderItem={renderPostItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.$id}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -208,6 +199,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     flexDirection: 'row',
@@ -327,6 +322,11 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: '#6B7280',
+    textAlign: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
     textAlign: 'center',
   },
 });
