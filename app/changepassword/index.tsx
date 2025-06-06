@@ -19,12 +19,14 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function ResetPasswordScreen() {
+export default function ChangetPasswordScreen() {
   const insets = useSafeAreaInsets();
   const { token } = useLocalSearchParams();
 
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,8 +38,8 @@ export default function ResetPasswordScreen() {
     return regex.test(password);
   };
 
-  const handleResetPassword = async () => {
-    if (!newPassword || !confirmPassword) {
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
       Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
       return;
     }
@@ -56,24 +58,17 @@ export default function ResetPasswordScreen() {
     }
 
     setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setResetSuccess(true);
-    }, 1500);
-  };
-
-  const handleChangePassword = async () => {
     try {
       await changePassword({
-        currentPassword: "currentPassword",
-        newPassword: "newPassword",
-        confirmNewPassword: "confirmNewPassword"
+        currentPassword,
+        newPassword,
+        confirmNewPassword: confirmPassword
       });
-      // Handle success
-    } catch (error) {
-      // Handle error
+      setResetSuccess(true);
+    } catch (error: any) {
+      Alert.alert('Lỗi', error.message || 'Có lỗi xảy ra khi đổi mật khẩu');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,11 +85,33 @@ export default function ResetPasswordScreen() {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.formContainer}
         >
-          <Text style={styles.title}>Đặt lại mật khẩu</Text>
+          <Text style={styles.title}>Đổi mật khẩu</Text>
 
           {!resetSuccess ? (
             <>
-              <Text style={styles.subtitle}>Tạo mật khẩu mới cho tài khoản của bạn</Text>
+              <Text style={styles.subtitle}>Nhập mật khẩu hiện tại và mật khẩu mới</Text>
+
+              <View style={styles.inputContainer}>
+                <Lock size={20} color="#6B7280" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Mật khẩu hiện tại"
+                  placeholderTextColor="#9CA3AF"
+                  secureTextEntry={!showCurrentPassword}
+                  value={currentPassword}
+                  onChangeText={setCurrentPassword}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowCurrentPassword(!showCurrentPassword)}
+                  style={styles.eyeButton}
+                >
+                  {showCurrentPassword ? (
+                    <EyeOff size={20} color="#6B7280" />
+                  ) : (
+                    <Eye size={20} color="#6B7280" />
+                  )}
+                </TouchableOpacity>
+              </View>
 
               <View style={styles.inputContainer}>
                 <Lock size={20} color="#6B7280" style={styles.inputIcon} />
@@ -183,13 +200,13 @@ export default function ResetPasswordScreen() {
 
               <TouchableOpacity
                 style={styles.resetButton}
-                onPress={handleResetPassword}
+                onPress={handleChangePassword}
                 disabled={loading}
               >
                 {loading ? (
                   <ActivityIndicator color="#FFFFFF" size="small" />
                 ) : (
-                  <Text style={styles.resetButtonText}>Đặt lại mật khẩu</Text>
+                  <Text style={styles.resetButtonText}>Đổi mật khẩu</Text>
                 )}
               </TouchableOpacity>
             </>
@@ -201,14 +218,14 @@ export default function ResetPasswordScreen() {
                 </View>
                 <Text style={styles.successTitle}>Đặt lại mật khẩu thành công!</Text>
                 <Text style={styles.successMessage}>
-                  Mật khẩu của bạn đã được cập nhật. Bây giờ bạn có thể đăng nhập bằng mật khẩu mới.
+                  Mật khẩu của bạn đã được cập nhật. 
                 </Text>
 
                 <TouchableOpacity
                   style={styles.loginButton}
-                  onPress={() => router.replace('/login')}
+                  onPress={() => router.replace('/')}
                 >
-                  <Text style={styles.loginButtonText}>Đăng nhập</Text>
+                  <Text style={styles.loginButtonText}>Trang chủ</Text>
                 </TouchableOpacity>
               </View>
             </>
@@ -362,6 +379,7 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: '#6C63FF',
     borderRadius: 12,
+    padding:10,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -49,7 +49,11 @@ const UpcomingEventsSection: React.FC<UpcomingEventsSectionProps> = ({ events })
   return (
     <View style={styles.container}>
       <SectionHeader linkto="/event" title="Sắp Diễn Ra" actionText="Xem tất cả" />
-
+      {events.length === 0 && (
+        <View style={styles.noEventsContainer}>
+          <Text style={styles.noEventsText}>Không có sự kiện nào sắp diễn ra.</Text>
+        </View>
+      )}
       <View style={styles.eventsContainer}>
         {events.map((event, index) => (
           <TouchableOpacity
@@ -119,6 +123,17 @@ const styles = StyleSheet.create({
     color: '#6C63FF',
     fontWeight: '500',
     marginLeft: 6,
+  },
+  noEventsContainer: {
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  noEventsText: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: 16,
   },
 });
 

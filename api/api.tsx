@@ -2,7 +2,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 export const axiosInstance = axios.create({
-  baseURL: 'https://tvshowbe.azurewebsites.net', // Thay đổi thành URL gốc của bạn
+  baseURL: 'https://tvshow2.azurewebsites.net/', // Thay đổi thành URL gốc của bạn
   timeout: 5000,
 });
 

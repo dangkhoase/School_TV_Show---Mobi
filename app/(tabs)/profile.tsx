@@ -1,38 +1,37 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  Modal,
-  Dimensions,
-  Animated,
-} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { router } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AccountInfo } from '@/api/useApi';
+import { useSession } from '@/auth/ctx';
+import { UserProfile } from '@/types/authTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import {
-  Settings,
-  LogOut,
-  Edit,
-  Heart,
-  MessageSquare,
+  Bell,
   Bookmark,
   ChevronRight,
-  Shield,
-  Bell,
+  Edit,
+  Heart,
   HelpCircle,
-  User,
   Lock,
+  LogOut,
+  MessageSquare,
+  Settings,
+  Shield,
+  User,
 } from 'lucide-react-native';
-import { useSession } from '@/auth/ctx';
-import { AccountInfo } from '@/api/useApi';
-import { UserProfile } from '@/types/authTypes';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  Animated,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -185,7 +184,7 @@ export default function ProfileScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => router.push('/reset-password')}
+              onPress={() => router.push('/changepassword')}
               style={styles.settingItem}
             >
               <View style={[styles.settingIcon, { backgroundColor: '#F0F0F0' }]}>

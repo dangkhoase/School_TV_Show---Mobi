@@ -140,3 +140,17 @@ export const getVideoHistoryByChannel = async (channelId: number, page: number =
   }
 };
 
+// Đổi mật khẩu
+export const changePassword = async (data: {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}) => {
+  try {
+    const response = await axiosInstance.patch('/api/accounts/change-password', data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+

@@ -1,11 +1,9 @@
-import { Lives, NewsCombined, Schedules, VideoHistoryActive } from '@/api/useApi';
+import { Lives, NewsCombined, Schedules } from '@/api/useApi';
 import CommunityPostsSection from '@/components/CommunityPostsSection';
-import FeaturedVideosSection from '@/components/FeaturedVideosSection';
 import LiveEventsSection from '@/components/LiveEventsSection';
 import UpcomingEventsSection from '@/components/UpcomingEventsSection';
 import { TOP_PLACES } from '@/data';
 import { ScheduleTimeline } from '@/types/authTypes';
-import { VideoHistory } from '@/types/videoHistory';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
@@ -18,20 +16,20 @@ export default function HomeScreen() {
   const [schedules, setSchedules] = useState<ScheduleTimeline[]>([]);
   const [PostNews, setPostNews] = useState([]);
   const [liveEvents, setLiveEvents] = useState([]);
-  const [featuredVideos, setFeaturedVideos] = useState<VideoHistory[]>([]);
+  // const [featuredVideos, setFeaturedVideos] = useState<VideoHistory[]>([]);
   const [communityPosts, setCommunityPosts] = useState([]);
 
   const fetchData = useCallback(async () => {
     try {
       const response = await Schedules();
       const combined = await NewsCombined();
-      const videoapi = await VideoHistoryActive();
+      // const videoapi = await VideoHistoryActive();
       const LiveAPi = await Lives();
       
       // Limit to 3 items
       setSchedules(response.data.Upcoming.$values.slice(0, 3));
       setCommunityPosts(combined.$values.slice(0, 3));
-      setFeaturedVideos(videoapi.$values.slice(0, 3));
+      // setFeaturedVideos(videoapi.$values.slice(0, 3));
       setLiveEvents(LiveAPi.data.LiveNow.$values.slice(0, 3)); 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -63,7 +61,7 @@ export default function HomeScreen() {
         <TopPlacesCarousel list={TOP_PLACES} />
         <LiveEventsSection events={liveEvents} />
         <UpcomingEventsSection events={schedules} />
-        <FeaturedVideosSection videos={featuredVideos} />
+        {/* <FeaturedVideosSection videos={featuredVideos} /> */}
         <CommunityPostsSection posts={communityPosts} />
         <View style={styles.footer} />
       </ScrollView>

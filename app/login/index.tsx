@@ -32,8 +32,8 @@ const LoginScreen: React.FC = () => {
   } = useForm<Formlogin>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'admin@example.com',
-      password: '12345Aa@',
+      email: '',
+      password: '',
     },
   });
   const { signIn } = useSession();
@@ -42,6 +42,8 @@ const LoginScreen: React.FC = () => {
   const [[,], setToken] = useStorageState('userToken');
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
+    console.log(data);
+    
     try {
       const result = await loginApi(data);
       console.log(result.token);
