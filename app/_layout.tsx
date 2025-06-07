@@ -43,6 +43,7 @@ export default function RootLayout() {
               <Stack.Screen name="reset-password" options={{ headerShown: false }} />
               <Stack.Screen name="update-account" options={{ headerShown: false }} />
               <Stack.Screen name="changepassword" options={{ headerShown: false }} />
+              <Stack.Screen name="school" options={{ headerShown: false }} />
               <Stack.Screen name="+not-found" />
             </Stack>
             <StatusBar style="auto" />

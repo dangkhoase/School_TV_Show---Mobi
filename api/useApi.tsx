@@ -154,3 +154,45 @@ export const changePassword = async (data: {
   }
 };
 
+// Lấy danh sách trường học đang hoạt động
+export const getActiveSchools = async () => {
+  try {
+    const response = await axiosInstance.get('/api/schoolchannels/active');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Theo dõi trường học
+export const followSchool = async (schoolId: number) => {
+  try {
+    const response = await axiosInstance.post(`/api/schoolchannelfollow/follow/${schoolId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Bỏ theo dõi trường học
+export const unfollowSchool = async (schoolId: number) => {
+  try {
+    const response = await axiosInstance.put(`/api/schoolchannelfollow/unfollow/${schoolId}`);
+    console.log(response.data );
+    
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Lấy danh sách trường học đã theo dõi
+export const getFollowedSchools = async () => {
+  try {
+    const response = await axiosInstance.get('/api/schoolchannelfollow/followed');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
