@@ -1,49 +1,72 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { axiosInstance } from '@/api/api';
+import { AccountInfo } from '@/api/useApi';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 import {
   ArrowLeft,
-  Camera,
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  School,
   Calendar,
+  Camera,
+  Mail,
+  MapPin,
+  Phone,
+  User
 } from 'lucide-react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function UpdateAccountScreen() {
   const insets = useSafeAreaInsets();
 
-  // Mock user data
+  // User data state
   const [userData, setUserData] = useState({
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    fullName: 'Nguyễn Văn A',
-    email: 'nguyenvana@gmail.com',
-    phone: '0912345678',
-    address: 'Hà Nội, Việt Nam',
-    school: 'Đại học Bách Khoa Hà Nội',
-    birthdate: '01/01/1998',
+    avatar: '',
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    school: '',
+    birthdate: '',
   });
 
   const [loading, setLoading] = useState(false);
+
+  // Fetch user data on component mount
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await AccountInfo();
+      setUserData({
+        avatar: response.avatar || 'https://randomuser.me/api/portraits/men/32.jpg',
+        fullName: response.fullname || '',
+        email: response.email || '',
+        phone: response.phoneNumber || '',
+        address: response.address || '',
+        school: response.school || '',
+        birthdate: response.birthdate || '',
+      });
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      Alert.alert('Lỗi', 'Không thể tải thông tin người dùng');
+    }
+  };
 
   const handlePickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -65,7 +88,7 @@ export default function UpdateAccountScreen() {
     }
   };
 
-  const handleUpdateProfile = () => {
+  const handleUpdateProfile = async () => {
     // Validate inputs
     if (!userData.fullName.trim()) {
       Alert.alert('Lỗi', 'Vui lòng nhập họ tên');
@@ -93,13 +116,28 @@ export default function UpdateAccountScreen() {
 
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const updateData = {
+        fullname: userData.fullName,
+        email: userData.email,
+        phoneNumber: userData.phone,
+        address: userData.address,
+        school: userData.school,
+        birthdate: userData.birthdate,
+        // Add avatar handling if your API supports it
+      };
+
+      await axiosInstance.patch('/api/accounts/update', updateData);
+      
       Alert.alert('Thành công', 'Thông tin tài khoản đã được cập nhật', [
         { text: 'OK', onPress: () => router.back() },
       ]);
-    }, 1500);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      Alert.alert('Lỗi', 'Không thể cập nhật thông tin tài khoản');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -110,7 +148,7 @@ export default function UpdateAccountScreen() {
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <ArrowLeft size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Cập nhật tài khoản</Text>
+        <Text style={styles.headerTitle}>Thông tin cá nhân</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -193,7 +231,7 @@ export default function UpdateAccountScreen() {
                 onChangeText={(text) => setUserData({ ...userData, address: text })}
               />
             </View>
-
+{/* 
             <View style={styles.inputContainer}>
               <School size={20} color="#6B7280" style={styles.inputIcon} />
               <TextInput
@@ -203,21 +241,8 @@ export default function UpdateAccountScreen() {
                 value={userData.school}
                 onChangeText={(text) => setUserData({ ...userData, school: text })}
               />
-            </View>
-          </View>
-
-          <TouchableOpacity
-            style={styles.updateButton}
-            onPress={handleUpdateProfile}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#FFFFFF" size="small" />
-            ) : (
-              <Text style={styles.updateButtonText}>Cập nhật thông tin</Text>
-            )}
-          </TouchableOpacity>
-
+            </View> */}
+          </View> 
           <View style={{ height: 40 }} />
         </ScrollView>
       </KeyboardAvoidingView>

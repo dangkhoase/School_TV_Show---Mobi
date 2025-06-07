@@ -80,7 +80,7 @@ const LoginScreen: React.FC = () => {
           style={styles.container}
         >
           <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>Chào mừng đến với schooltvshow</Text>
+            <Text style={styles.headerText}>Chào mừng đến với School TV</Text>
             <Text style={styles.subHeaderText}>Đăng nhập để tiếp tục</Text>
           </View>
           <View style={styles.formContainer}>
@@ -105,12 +105,12 @@ const LoginScreen: React.FC = () => {
               leftIcon={<Lock size={20} color="#6B7280" />}
               secureTextEntry
             />
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onFocus={() => router.push('/forgot-password')}
               style={styles.forgotPassword}
             >
               <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Pressable
               onPress={handleSubmit(onSubmit)}
               disabled={loading}
@@ -131,12 +131,12 @@ const LoginScreen: React.FC = () => {
             </Pressable>
           </View>
         </KeyboardAvoidingView>
-        <View style={styles.footerContainer}>
+        {/* <View style={styles.footerContainer}>
           <Text style={styles.footerText}> Chưa có tài khoản?</Text>
           <Link href={'/register'}>
             <Text style={styles.signUpText}>Sign Up</Text>
           </Link>
-        </View>
+        </View> */}
       </LinearGradient>
     </ImageBackground>
   );

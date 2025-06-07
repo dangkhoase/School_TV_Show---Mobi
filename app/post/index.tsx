@@ -1,20 +1,20 @@
 'use client';
 
-import { PostNews } from '@/api/useApi';
+import { NewsCombined } from '@/api/useApi';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ArrowLeft, Filter, Heart, MessageCircle, Search, Share2 } from 'lucide-react-native';
+import { ArrowLeft, Filter, Search } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -30,7 +30,7 @@ export default function CommunityPostsScreen() {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const response = await PostNews();
+      const response = await NewsCombined();
       setPosts(response.$values);
       setError(null);
     } catch (err) {
@@ -100,31 +100,7 @@ export default function CommunityPostsScreen() {
         </Text>
       </View>
 
-      <View style={styles.postActions}>
-        <TouchableOpacity style={styles.actionButton} onPress={() => handleLikePost(item.$id)}>
-          <Heart
-            size={20}
-            color={likedPosts[item.$id] ? '#EF4444' : '#6B7280'}
-            fill={likedPosts[item.$id] ? '#EF4444' : 'none'}
-          />
-          <Text style={[styles.actionText, likedPosts[item.$id] && { color: '#EF4444' }]}>
-            Thích
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => router.push(`/post/${item.$id}`)}
-        >
-          <MessageCircle size={20} color="#6B7280" />
-          <Text style={styles.actionText}>Bình luận</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionButton}>
-          <Share2 size={20} color="#6B7280" />
-          <Text style={styles.actionText}>Chia sẻ</Text>
-        </TouchableOpacity>
-      </View>
+    
     </View>
   );
 

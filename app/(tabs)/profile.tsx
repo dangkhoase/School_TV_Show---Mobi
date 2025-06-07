@@ -7,7 +7,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import {
-  Bell,
   ChevronRight,
   Edit,
   HelpCircle,
@@ -188,14 +187,6 @@ export default function ProfileScreen() {
                 <Lock size={20} color="#333" />
               </View>
               <Text style={styles.settingText}>Bảo mật</Text>
-              <ChevronRight size={20} color="#999" />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.settingItem}>
-              <View style={[styles.settingIcon, { backgroundColor: '#F0F0F0' }]}>
-                <Bell size={20} color="#333" />
-              </View>
-              <Text style={styles.settingText}>Thông báo</Text>
               <ChevronRight size={20} color="#999" />
             </TouchableOpacity>
 

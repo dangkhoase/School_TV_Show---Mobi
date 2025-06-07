@@ -3,7 +3,6 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
  
 import { Combined } from '@/types/combined';
 import { router } from 'expo-router';
-import { Heart, MessageCircle, Share2 } from 'lucide-react-native';
 import SectionHeader from './SectionHeader';
 
 interface CommunityPostsSectionProps {
@@ -63,22 +62,7 @@ const CommunityPostsSection: React.FC<CommunityPostsSectionProps> = ({ posts }) 
 
             {post.newsPictures && <Image source={{ uri: `data:image/jpeg;base64,${post?.newsPictures?.$values[0]?.fileData}` }} style={styles.postImage} />}
 
-            <View style={styles.postActions}>
-              <TouchableOpacity style={styles.actionButton}>
-                <Heart size={18} color="#666" />
-                <Text style={styles.actionText}>0</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.actionButton}>
-                <MessageCircle size={18} color="#666" />
-                <Text style={styles.actionText}>0</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.actionButton}>
-                <Share2 size={18} color="#666" />
-                <Text style={styles.actionText}>Chia sẻ</Text>
-              </TouchableOpacity>
-            </View>
+          
           </TouchableOpacity>
         ))}
       </View>

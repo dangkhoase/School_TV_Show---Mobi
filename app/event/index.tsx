@@ -4,17 +4,17 @@ import { Schedules } from '@/api/useApi';
 import { ScheduleTimeline } from '@/types/authTypes';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ArrowLeft, Bell, Calendar, Filter, MapPin, Search, Users } from 'lucide-react-native';
+import { ArrowLeft, Calendar, Filter, MapPin, Search } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    FlatList,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -77,7 +77,7 @@ export default function UpcomingEventsScreen() {
   const renderEventItem = ({ item }: { item: ScheduleTimeline }) => (
     <TouchableOpacity
       style={styles.eventCard}
-      onPress={() => router.push(`/event/${item.$id}`)}
+      onPress={() => router.push(`/event/${item.scheduleID}`)}
     >
       <View style={styles.upcomingTag}>
         <Text style={styles.upcomingText}>Sắp diễn ra</Text>
@@ -98,23 +98,9 @@ export default function UpcomingEventsScreen() {
           <MapPin size={16} color="#6B7280" />
           <Text style={styles.detailText}>{item.program.schoolChannel.address || 'Chưa có địa điểm'}</Text>
         </View>
-
-        <View style={styles.detailItem}>
-          <Users size={16} color="#6B7280" />
-          <Text style={styles.detailText}>0 người tham gia</Text>
-        </View>
+ 
       </View>
-
-      <View style={styles.actionButtons}>
-        <TouchableOpacity style={styles.detailButton}>
-          <Text style={styles.detailButtonText}>Chi Tiết</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.reminderButton}>
-          <Bell size={16} color="#4A90E2" />
-          <Text style={styles.reminderButtonText}>Đặt Lịch Nhắc</Text>
-        </TouchableOpacity>
-      </View>
+  
     </TouchableOpacity>
   );
 
@@ -158,7 +144,7 @@ export default function UpcomingEventsScreen() {
           onChangeText={setSearchQuery}
         />
       </View>
-
+{/* 
       <View style={styles.filterTabs}>
         <TouchableOpacity
           style={[styles.filterTab, activeFilter === 'all' && styles.activeFilterTab]}
@@ -209,7 +195,7 @@ export default function UpcomingEventsScreen() {
             Workshop
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <FlatList
         data={filteredEvents}
