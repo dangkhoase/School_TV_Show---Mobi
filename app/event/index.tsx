@@ -7,14 +7,14 @@ import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, Bell, Calendar, Filter, MapPin, Search, Users } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    FlatList,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -35,7 +35,7 @@ export default function UpcomingEventsScreen() {
       setError(null);
     } catch (err) {
       setError('Không thể tải danh sách sự kiện. Vui lòng thử lại sau.');
-      console.error('Error fetching events:', err);
+      console.log('Error fetching events:', err);
     } finally {
       setLoading(false);
     }

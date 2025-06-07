@@ -10,16 +10,16 @@ import type React from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  ActivityIndicator,
-  Alert,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    Alert,
+    ImageBackground,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
 } from 'react-native';
 import { z } from 'zod';
 
@@ -80,7 +80,7 @@ const RegisterScreen: React.FC = () => {
     } catch (error) {
       setLoading(false);
       Alert.alert('Lỗi', 'Không thể kết nối đến máy chủ.');
-      console.error('onSubmit error:', error);
+      console.log('onSubmit error:', error);
     }
   };
 

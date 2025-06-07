@@ -8,17 +8,14 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import {
   Bell,
-  Bookmark,
   ChevronRight,
   Edit,
-  Heart,
   HelpCircle,
   Lock,
   LogOut,
-  MessageSquare,
   Settings,
   Shield,
-  User,
+  User
 } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -45,7 +42,7 @@ export default function ProfileScreen() {
       setUser(response);
       console.log('User data:', response);
     } catch (error) {
-      console.error('Error fetching account info:', error);
+      console.log('Error fetching account info:', error);
     }
   }, []);
   useEffect(() => {
@@ -59,7 +56,7 @@ export default function ProfileScreen() {
       signOut();
       router.replace('/login');
     } catch (error) {
-      console.error('Logout error:', error);
+      console.log('Logout error:', error);
     }
   };
 
@@ -123,7 +120,7 @@ export default function ProfileScreen() {
           </View>
 
           {/* Stats */}
-          <View style={styles.statsContainer}>
+          {/* <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{user?.posts}</Text>
               <Text style={styles.statLabel}>Bài viết</Text>
@@ -138,11 +135,11 @@ export default function ProfileScreen() {
               <Text style={styles.statNumber}>{user?.following}</Text>
               <Text style={styles.statLabel}>Đang theo dõi</Text>
             </View>
-          </View>
+          </View> */}
         </View>
 
         {/* Activity Section */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.sectionTitle}>Hoạt động gần đây</Text>
           <View style={styles.activityContainer}>
             <TouchableOpacity onPress={() => router.replace('/')} style={styles.activityItem}>
@@ -169,13 +166,13 @@ export default function ProfileScreen() {
               <ChevronRight size={20} color="#999" />
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
 
         {/* Settings Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Cài đặt tài khoản</Text>
           <View style={styles.settingsContainer}>
-            <TouchableOpacity style={styles.settingItem}>
+            <TouchableOpacity style={styles.settingItem } onPress={() => router.push('/update-account')}> 
               <View style={[styles.settingIcon, { backgroundColor: '#F0F0F0' }]}>
                 <User size={20} color="#333" />
               </View>

@@ -47,7 +47,7 @@ export default function SchoolDetailScreen() {
         const followedSchools = followedResponse.$values || [];
         setIsFollowing(followedSchools.some((s: any) => s.schoolChannelID === Number(id)));
       } catch (error) {
-        console.error('Error fetching data123:', error);
+        console.log('Error fetching data123:', error);
       }
     };
 
@@ -63,7 +63,7 @@ export default function SchoolDetailScreen() {
       }
       setIsFollowing(!isFollowing);
     } catch (error) {
-      console.error('Error toggling follow:', error);
+      console.log('Error toggling follow:', error);
     }
   };
 

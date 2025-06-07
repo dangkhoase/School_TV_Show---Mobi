@@ -6,15 +6,15 @@ import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, Filter, Heart, MessageCircle, Search, Share2 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    FlatList,
+    Image,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -35,7 +35,7 @@ export default function CommunityPostsScreen() {
       setError(null);
     } catch (err) {
       setError('Không thể tải danh sách bài viết. Vui lòng thử lại sau.');
-      console.error('Error fetching posts:', err);
+      console.log('Error fetching posts:', err);
     } finally {
       setLoading(false);
     }

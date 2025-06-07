@@ -11,16 +11,16 @@ import { Lock, Mail } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  ActivityIndicator,
-  Alert,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    ImageBackground,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { loginApi } from '../../api/authApi';
 import { LoginFormData } from '../../types/authTypes';
@@ -65,7 +65,7 @@ const LoginScreen: React.FC = () => {
       console.log(12312312, error);
 
       Alert.alert('Sai thông tin', 'Tài khoản hoặc mật khẩu không chính xác!');
-      // console.error('onSubmit error:', error);
+      // console.log('onSubmit error:', error);
     }
   };
 

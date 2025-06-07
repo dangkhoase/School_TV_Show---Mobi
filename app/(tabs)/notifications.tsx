@@ -67,7 +67,7 @@ export default function NotificationsScreen() {
       setError(null);
     } catch (err) {
       setError('Không thể tải thông báo. Vui lòng thử lại sau.');
-      console.error('Error fetching notifications:', err);
+      console.log('Error fetching notifications:', err);
     } finally {
       setLoading(false);
     }

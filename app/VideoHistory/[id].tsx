@@ -25,7 +25,7 @@ export default function VideoDetailScreen() {
       setError(null);
     } catch (err) {
       setError('Không thể tải thông tin video. Vui lòng thử lại sau.');
-      console.error('Error fetching video details:', err);
+      console.log('Error fetching video details:', err);
     } finally {
       setLoading(false);
     }

@@ -86,7 +86,7 @@ export default function VideoDetailScreen() {
         setComments(commentResponse.$values || []);
       })
       .catch((error) => {
-        console.error('Error fetching comments:', error);
+        console.log('Error fetching comments:', error);
       })
       .finally(() => {
         setLoadingComments(false);
@@ -106,7 +106,7 @@ export default function VideoDetailScreen() {
       // Refresh comments immediately after posting
       fetchComments(liveData.videoHistoryIdFromSchedule);
     } catch (error) {
-      console.error('Error posting comment:', error);
+      console.log('Error posting comment:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -135,7 +135,7 @@ export default function VideoDetailScreen() {
         }
       })
       .catch((error) => {
-        console.error('Error fetching live data:', error);
+        console.log('Error fetching live data:', error);
         setLiveData(null);
       });
   }, [id]);

@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import ComAvatar from './ComAvatar';
-import { useCallback, useEffect, useState } from 'react';
 import { AccountInfo } from '@/api/useApi';
+import { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ComAvatar from './ComAvatar';
 export default function Header() {
   const [userName, setUserName] = useState('');
   const fetchData = useCallback(async () => {
@@ -9,7 +9,7 @@ export default function Header() {
       const response = await AccountInfo();
       setUserName(response?.fullname);
     } catch (error) {
-      console.error('Error fetching account info:', error);
+      console.log('Error fetching account info:', error);
     }
   }, []);
   useEffect(() => {

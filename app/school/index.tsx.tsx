@@ -30,7 +30,7 @@ export default function SchoolsScreen() {
       const followed = followedResponse.$values || [];
       setFollowedSchools(followed.map((s: any) => s.schoolChannelID));
     } catch (error) {
-      // console.error('Error fetching data321:', error);
+      // console.log('Error fetching data321:', error);
     }
   };
 
@@ -56,7 +56,7 @@ export default function SchoolsScreen() {
         setFollowedSchools(prev => [...prev, schoolId]);
       }
     } catch (error) {
-      console.error('Error toggling follow:', error);
+      console.log('Error toggling follow:', error);
     }
   };
 
@@ -111,7 +111,7 @@ export default function SchoolsScreen() {
                     <View style={styles.followersContainer}>
                       <Building2 size={16} color="#6C63FF" />
                       <Text style={styles.followersText}>
-                        {school.followers} người theo dõi
+                        
                       </Text>
                     </View>
                     <TouchableOpacity

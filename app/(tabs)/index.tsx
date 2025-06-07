@@ -33,7 +33,7 @@ export default function HomeScreen() {
       setLiveEvents(LiveAPi.data.LiveNow.$values.slice(0, 3));
       setSchools(schoolsData.$values.slice(0, 3));
     } catch (error) {
-      // console.error('Error fetching data:', error);
+      // console.log('Error fetching data:', error);
     }
   }, []);
 

@@ -22,7 +22,7 @@ export const registerApi = async (data: RegisterFormData) => {
     const response = await axiosInstance.post('/api/accounts/register', data);
     return response.data; // JSON trả về từ server
   } catch (error) {
-    console.error('registerApi error:', error);
+    console.log('registerApi error:', error);
     throw error;
   }
 };
@@ -33,7 +33,7 @@ export const loginApi = async (data: LoginFormData) => {
     const response = await axiosInstance.post('/api/accounts/login', data);
     return response.data;
   } catch (error) {
-    // console.error('loginApi error:', error);
+    // console.log('loginApi error:', error);
     throw error;
   }
 };

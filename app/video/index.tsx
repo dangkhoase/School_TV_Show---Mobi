@@ -7,15 +7,15 @@ import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, Clock, Eye, Filter, Search } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    FlatList,
+    Image,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -35,7 +35,7 @@ export default function FeaturedVideosScreen() {
       setError(null);
     } catch (err) {
       setError('Không thể tải danh sách video. Vui lòng thử lại sau.');
-      console.error('Error fetching videos:', err);
+      console.log('Error fetching videos:', err);
     } finally {
       setLoading(false);
     }

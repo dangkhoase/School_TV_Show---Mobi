@@ -36,7 +36,7 @@ export default function VideoHistoryScreen() {
       setError(null);
     } catch (err) {
       setError('Không thể tải danh sách video. Vui lòng thử lại sau.');
-      console.error('Error fetching videos:', err);
+      console.log('Error fetching videos:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);

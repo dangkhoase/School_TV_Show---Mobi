@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 // Kiểm tra nếu nền tảng là Web
 const isWeb = typeof window !== 'undefined' && window.localStorage;
@@ -51,7 +51,7 @@ export const StorageProvider: React.FC<StorageProviderProps> = ({ children }) =>
 
         setStorage(storageData);
       } catch (error) {
-        console.error('Error retrieving storage data:', error);
+        console.log('Error retrieving storage data:', error);
       }
     };
 
@@ -74,7 +74,7 @@ export const StorageProvider: React.FC<StorageProviderProps> = ({ children }) =>
         await SecureStore.setItemAsync(key, valueToStore);
       }
     } catch (error) {
-      console.error(`Error saving data for key ${key}:`, error);
+      console.log(`Error saving data for key ${key}:`, error);
     }
   };
 
@@ -93,7 +93,7 @@ export const StorageProvider: React.FC<StorageProviderProps> = ({ children }) =>
         await SecureStore.deleteItemAsync(key);
       }
     } catch (error) {
-      console.error(`Error removing data for key ${key}:`, error);
+      console.log(`Error removing data for key ${key}:`, error);
     }
   };
 

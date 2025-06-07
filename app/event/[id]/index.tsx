@@ -4,23 +4,23 @@ import { getEventById } from '@/api/useApi';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import {
-  ArrowLeft,
-  BookmarkPlus,
-  Building,
-  Clock,
-  Heart,
-  Share2
+    ArrowLeft,
+    BookmarkPlus,
+    Building,
+    Clock,
+    Heart,
+    Share2
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -71,7 +71,7 @@ export default function EventDetailScreen() {
         setEvent(data.data);
       })
       .catch((error) => {
-        console.error('Error fetching event:', error);
+        console.log('Error fetching event:', error);
       })
       .finally(() => {
         setLoading(false);

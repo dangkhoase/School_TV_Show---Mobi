@@ -29,7 +29,7 @@ const SchoolsSection: React.FC<SchoolsSectionProps> = ({ schools }) => {
         setFollowedSchools(prev => [...prev, schoolId]);
       }
     } catch (error) {
-      console.error('Error toggling follow:', error);
+      console.log('Error toggling follow:', error);
     }
   };
 
