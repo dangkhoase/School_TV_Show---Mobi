@@ -94,11 +94,11 @@ export default function CommunityPostsScreen() {
         <Image source={{ uri: item.thumbnail }} style={styles.postImage} />
       )}
 
-      <View style={styles.postStats}>
+      {/* <View style={styles.postStats}>
         <Text style={styles.statText}>
           {likedPosts[item.$id] ? (item.likes || 0) + 1 : item.likes || 0} lượt thích • {item.comments || 0} bình luận
         </Text>
-      </View>
+      </View> */}
 
     
     </View>

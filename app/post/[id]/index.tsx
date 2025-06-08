@@ -1,23 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArrowLeft, Heart, MessageCircle, Share2, Send } from 'lucide-react-native';
 import { getPostById } from '@/api/useApi';
 import { Combined } from '@/types/combined';
+import { router, useLocalSearchParams } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { ArrowLeft, Send } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PostDetailScreen() {
   const insets = useSafeAreaInsets();
@@ -102,13 +102,13 @@ export default function PostDetailScreen() {
               />
             )}
 
-            <View style={styles.postStats}>
+            {/* <View style={styles.postStats}>
               <Text style={styles.statText}>
                 {liked ? 1 : 0} lượt thích • 0 bình luận
               </Text>
-            </View>
+            </View> */}
 
-            <View style={styles.postActions}>
+            {/* <View style={styles.postActions}>
               <TouchableOpacity style={styles.actionButton} onPress={handleLikePost}>
                 <Heart
                   size={20}
@@ -127,12 +127,12 @@ export default function PostDetailScreen() {
                 <Share2 size={20} color="#6B7280" />
                 <Text style={styles.actionText}>Chia sẻ</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
-          <View style={styles.commentsSection}>
+          {/* <View style={styles.commentsSection}>
             <Text style={styles.commentsTitle}>Bình luận (0)</Text>
-          </View>
+          </View> */}
         </ScrollView>
 
         <View style={styles.inputContainer}>

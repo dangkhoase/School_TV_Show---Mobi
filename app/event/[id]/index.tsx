@@ -144,7 +144,7 @@ export default function EventDetailScreen() {
         </View>
 
         {/* Action Buttons */}
-        <View style={styles.actionButtons}>
+        {/* <View style={styles.actionButtons}>
           <TouchableOpacity
             style={[styles.actionButton, liked && styles.actionButtonActive]}
             onPress={() => setLiked(!liked)}
@@ -165,7 +165,7 @@ export default function EventDetailScreen() {
             <BookmarkPlus size={20} color={saved ? '#6C63FF' : '#6B7280'} />
             <Text style={[styles.actionText, saved && styles.actionTextActive]}>Theo dõi</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
 
       {/* Tabs */}
